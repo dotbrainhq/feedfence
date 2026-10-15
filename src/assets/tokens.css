@@ -41,6 +41,13 @@
   --accent: var(--green);
   --accent-ink: var(--green-ink);
   --focus: var(--green);
+  --switch-off: var(--rule);
+  --switch-on: var(--green);
+  --knob: var(--white);
+  --knob-on: var(--white);
+  --primary-bg: var(--forest);
+  --primary-fg: var(--lime);
+  --primary-hover: var(--forest-2);
   color-scheme: light;
 }
 
@@ -56,6 +63,13 @@
     --accent: var(--lime);
     --accent-ink: var(--lime);
     --focus: var(--lime);
+    --switch-off: var(--forest-3);
+    --switch-on: var(--lime);
+    --knob: var(--white);
+    --knob-on: var(--forest);
+    --primary-bg: var(--lime);
+    --primary-fg: var(--forest);
+    --primary-hover: var(--white);
     color-scheme: dark;
   }
 }

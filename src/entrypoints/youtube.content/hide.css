@@ -1,0 +1,71 @@
+/*
+ * YouTube hide rules. Each rule only applies while its data-ff-<section>
+ * attribute is on <html>; the content script sets those from settings.
+ * Selectors use custom elements, ids and URLs, never visible text, so they
+ * keep working in every language. Checked against live YouTube on 2026-10-15.
+ */
+
+/* Shorts: shelves, single results, sidebar entries and channel tabs. */
+html[data-ff-shorts] ytd-reel-shelf-renderer,
+html[data-ff-shorts] ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),
+html[data-ff-shorts] grid-shelf-view-model:has(a[href^="/shorts/"]),
+html[data-ff-shorts] ytd-rich-item-renderer:has(a[href^="/shorts/"]),
+html[data-ff-shorts] ytd-video-renderer:has(a[href^="/shorts/"]),
+html[data-ff-shorts] yt-lockup-view-model:has(a[href^="/shorts/"]),
+html[data-ff-shorts] ytd-guide-entry-renderer:has(a[title="Shorts"]),
+html[data-ff-shorts] ytd-mini-guide-entry-renderer[aria-label="Shorts"],
+html[data-ff-shorts] yt-tab-shape[tab-title="Shorts"] {
+  display: none !important;
+}
+
+/* Home page recommendations. Search, subscriptions and the sidebar stay. */
+html[data-ff-home] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer {
+  display: none !important;
+}
+
+/* A quiet note where the feed was, so the page doesn't look broken. */
+html[data-ff-home] ytd-browse[page-subtype="home"]::before {
+  content: 'Home feed hidden by Feedfence. Search, or open Subscriptions.';
+  display: block;
+  margin: 96px auto 0;
+  max-width: 420px;
+  padding: 0 24px;
+  text-align: center;
+  font: 400 1.5rem / 1.5 Roboto, Arial, sans-serif;
+  color: var(--yt-spec-text-secondary, #606060);
+}
+
+/* Related videos next to the player. Playlists and live chat in the same column stay. */
+html[data-ff-related] ytd-watch-flexy #related {
+  display: none !important;
+}
+
+/* Comments under the video and in the side panel. */
+html[data-ff-comments] ytd-watch-flexy ytd-comments#comments,
+html[data-ff-comments] ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"] {
+  display: none !important;
+}
+
+/* Suggestions on the player: info cards, the end screen wall and the fullscreen grid. */
+html[data-ff-endscreen] .ytp-ce-element,
+html[data-ff-endscreen] .ytp-endscreen-content,
+html[data-ff-endscreen] .videowall-endscreen,
+html[data-ff-endscreen] .ytp-fullscreen-grid,
+html[data-ff-endscreen] .ytp-pause-overlay {
+  display: none !important;
+}
+
+/* Sponsored tiles and banners on the page. Video ads in the player are left alone. */
+html[data-ff-sponsored] ytd-ad-slot-renderer,
+html[data-ff-sponsored] ytd-rich-item-renderer:has(> #content > ytd-ad-slot-renderer),
+html[data-ff-sponsored] ytd-in-feed-ad-layout-renderer,
+html[data-ff-sponsored] ytd-promoted-sparkles-web-renderer,
+html[data-ff-sponsored] ytd-search-pyv-renderer,
+html[data-ff-sponsored] ytd-companion-slot-renderer,
+html[data-ff-sponsored] ytd-banner-promo-renderer,
+html[data-ff-sponsored] ytd-statement-banner-renderer,
+html[data-ff-sponsored] ytd-merch-shelf-renderer,
+html[data-ff-sponsored] #player-ads,
+html[data-ff-sponsored] #masthead-ad {
+  display: none !important;
+}
