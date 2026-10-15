@@ -1,0 +1,39 @@
+# CI for Feedfence: type-check, build for Chrome and Firefox, then run the Firefox add-on linter.
+# Branch protection requires only the final "CI passed" job.
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Lint, test and build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Each step runs only when package.json has the script.
+      - run: npm run lint --if-present
+      - run: npm run check --if-present
+      - run: npm test --if-present
+      - run: npm run build
+      - run: npm run lint:firefox
+
+  ci-passed:
+    name: CI passed
+    if: always()
+    needs: [ build ]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check that every job passed
+        run: test "${{ needs.build.result }}" = success

@@ -1,0 +1,85 @@
+/* Feedfence design tokens, from the brand kit. Components use the semantic tokens only. */
+:root {
+  --forest: #003820;
+  --forest-2: #0b4a2e;
+  --forest-3: #1d5c3e;
+  --green: #0ea053;
+  --green-ink: #087a3e;
+  --lime: #bef050;
+  --paper: #f0f8f1;
+  --paper-2: #e2efe5;
+  --ink: #0d1f16;
+  --ink-2: #3d5247;
+  --ink-3: #566b5f;
+  --white: #f9fdfa;
+  --rule: #cfe0d4;
+  --rule-dark: #24603f;
+  --on-dark-2: #b9d3c3;
+
+  --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+  --font-body: 'Instrument Sans', system-ui, sans-serif;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-draw: 900ms;
+
+  --bg: var(--paper);
+  --surface: var(--white);
+  --surface-2: var(--paper-2);
+  --text: var(--ink);
+  --text-2: var(--ink-2);
+  --text-3: var(--ink-3);
+  --line: var(--rule);
+  --accent: var(--green);
+  --accent-ink: var(--green-ink);
+  --focus: var(--green);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--forest);
+    --surface: var(--forest-2);
+    --surface-2: var(--forest-2);
+    --text: var(--white);
+    --text-2: var(--on-dark-2);
+    --text-3: var(--on-dark-2);
+    --line: var(--rule-dark);
+    --accent: var(--lime);
+    --accent-ink: var(--lime);
+    --focus: var(--lime);
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}

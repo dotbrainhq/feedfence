@@ -1,0 +1,12 @@
+node_modules/
+.output/
+.wxt/
+web-ext-artifacts/
+stats.html
+*.log
+.env
+.env.*
+.DS_Store
+
+# Plans, research, brand kit and design work. Kept on this machine, never pushed.
+/private/
