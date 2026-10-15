@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/cover-dark.png">
+  <img src=".github/assets/cover-light.png" alt="Feedfence: hide the parts of social sites you didn't ask for. A browser extension for Chrome and Firefox. Next to the tagline, the Feedfence popup on YouTube shows 48 minutes spent today and switches that hide Shorts, home recommendations, related videos and sponsored tiles.">
+</picture>
+
 # Feedfence
 
 A browser extension that hides the parts of social sites you didn't ask for, and shows where your time goes. Made by DotbrainLLC.
