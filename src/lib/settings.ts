@@ -3,6 +3,7 @@ export const SECTIONS = {
   youtube: ['shorts', 'home', 'related', 'comments', 'endscreen', 'sponsored'],
   linkedin: ['promoted', 'suggested', 'recommendations', 'games', 'stats', 'feed'],
   x: ['promoted', 'trends', 'follow', 'premium', 'sidebar', 'foryou'],
+  reddit: ['promoted', 'suggested', 'recent', 'popular', 'sidebar'],
 } as const;
 
 export type HideSite = keyof typeof SECTIONS;
@@ -28,6 +29,7 @@ export interface Settings {
   /** Missing in settings saved before support for the site. */
   linkedin?: SiteSettings;
   x?: SiteSettings;
+  reddit?: SiteSettings;
 }
 
 // Each preset adds to the one before it. Things people use on purpose
@@ -47,6 +49,11 @@ const PRESET_SECTIONS: Record<HideSite, Record<Preset, string[]>> = {
     light: ['promoted'],
     focus: ['promoted', 'trends', 'follow', 'premium', 'sidebar'],
     strict: ['promoted', 'trends', 'follow', 'premium', 'sidebar', 'foryou'],
+  },
+  reddit: {
+    light: ['promoted'],
+    focus: ['promoted', 'suggested', 'recent', 'popular'],
+    strict: ['promoted', 'suggested', 'recent', 'popular', 'sidebar'],
   },
 };
 
@@ -68,6 +75,7 @@ export const DEFAULT_SETTINGS: Settings = {
   youtube: defaultSite('youtube'),
   linkedin: defaultSite('linkedin'),
   x: defaultSite('x'),
+  reddit: defaultSite('reddit'),
 };
 
 export const PAUSE_MS = 5 * 60 * 1000;
