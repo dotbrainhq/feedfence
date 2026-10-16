@@ -30,6 +30,22 @@ html[data-ff-games][data-ff-recommendations][data-ff-promoted] div:has(> section
   grid-column: 8 / span 15 !important;
 }
 
+/*
+ * Profile pages: with recommendations and ads hidden, the sidebar has nothing
+ * left worth a column (its public profile settings are also under Settings),
+ * so drop it and center the profile section at its usual 792 px width.
+ */
+html[data-ff-li-profile][data-ff-recommendations][data-ff-promoted] div:has(> section + aside) > aside {
+  display: none !important;
+}
+
+html[data-ff-li-profile][data-ff-recommendations][data-ff-promoted] div:has(> section + aside) > section {
+  grid-column: 1 / -1 !important;
+  justify-self: center !important;
+  width: 100% !important;
+  max-width: 792px !important;
+}
+
 /* The whole feed, except the "start a post" box at the top. */
 html[data-ff-feed] [data-testid='mainFeed'] > :not(:first-child) {
   display: none !important;
