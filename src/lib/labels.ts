@@ -26,4 +26,11 @@ export const SECTION_LABELS: Record<HideSite, Record<string, { label: string; no
     sidebar: { label: 'The whole sidebar', note: 'Search stays under Explore' },
     foryou: { label: '"For you" timeline', note: 'Home opens on Following instead' },
   },
+  reddit: {
+    promoted: { label: 'Ads', note: 'In feeds, the sidebar and comments' },
+    suggested: { label: 'Community suggestions', note: 'Placed inside the feed' },
+    recent: { label: 'Recent posts', note: 'The sidebar card' },
+    popular: { label: 'Menu extras', note: 'Popular, News, Explore, Games, Resources' },
+    sidebar: { label: 'The whole right sidebar', note: 'Community info and rules too' },
+  },
 };

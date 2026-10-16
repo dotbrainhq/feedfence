@@ -1,0 +1,72 @@
+/*
+ * Reddit hide rules. Each rule only applies while its data-ff-<section>
+ * attribute is on <html>. Selectors use Reddit's shreddit-* elements, ids
+ * and link targets, never visible text. Ad elements were seen on subreddit
+ * Popular and home pages on 2026-10-16, signed out and signed in.
+ */
+
+/* Ads in feeds, the sidebar and comment pages, and the header's Advertise button. */
+html[data-ff-promoted] shreddit-ad-post,
+html[data-ff-promoted] shreddit-sidebar-ad,
+html[data-ff-promoted] shreddit-comments-page-ad,
+html[data-ff-promoted] advertise-button,
+html[data-ff-promoted] shreddit-dynamic-ad-link {
+  display: none !important;
+}
+
+/* Community suggestions placed inside feeds. On Explore those lists are the page itself, so they stay. */
+html[data-ff-suggested]:not([data-ff-rd-page='explore']) in-feed-community-recommendations {
+  display: none !important;
+}
+
+/* The "Recent posts" card in the sidebar. */
+html[data-ff-recent] recent-posts {
+  display: none !important;
+}
+
+/*
+ * Left menu extras: the whole Games section and Resources. Popular, News and
+ * Explore live in the menu's shadow DOM, so the content script hides those.
+ */
+html[data-ff-popular] #left-sidebar-container games-section-badge-controller,
+html[data-ff-popular] #left-sidebar-container faceplate-expandable-section-helper:has(#RESOURCES) {
+  display: none !important;
+}
+
+/*
+ * Home feed: its right column only holds the sidebar ad and Recent posts.
+ * With both hidden it's empty, so collapse it and center the feed.
+ * Community pages keep their sidebar (info and rules).
+ */
+html[data-ff-promoted][data-ff-recent] div:has(> main#main-content):has(> #right-sidebar-container recent-posts):not(:has(#subreddit-right-rail__partial)) {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+html[data-ff-promoted][data-ff-recent] div:has(> main#main-content):has(> #right-sidebar-container recent-posts):not(:has(#subreddit-right-rail__partial)) > #right-sidebar-container {
+  display: none !important;
+}
+
+html[data-ff-promoted][data-ff-recent] div:has(> main#main-content):has(> #right-sidebar-container recent-posts):not(:has(#subreddit-right-rail__partial)) > main#main-content {
+  justify-self: center !important;
+  width: 100% !important;
+  max-width: 760px !important;
+}
+
+/*
+ * The whole right sidebar. Feed and sidebar share a two-column grid
+ * (697 px + 316 px), so make it one column and center the feed instead of
+ * leaving an empty column.
+ */
+html[data-ff-sidebar] #right-sidebar-container {
+  display: none !important;
+}
+
+html[data-ff-sidebar] div:has(> main#main-content):has(> #right-sidebar-container) {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+html[data-ff-sidebar] main#main-content {
+  justify-self: center !important;
+  width: 100% !important;
+  max-width: 760px !important;
+}
