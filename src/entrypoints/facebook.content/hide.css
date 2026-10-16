@@ -1,0 +1,56 @@
+/*
+ * Facebook hide rules. Each rule only applies while its data-ff-<section>
+ * attribute is on <html>. Facebook's class names are generated, so rules use
+ * its data-pagelet sections, roles and link targets, plus data-ff-fb marks
+ * from the content script. Checked against the signed-in home feed on
+ * 2026-10-16. That browser blocks ads, so the sponsored-post markers come
+ * from the public filter lists and still need checking without an ad blocker.
+ */
+
+/* Sponsored posts and the sponsored block in the right column. */
+html[data-ff-promoted] [data-pagelet^='FeedUnit']:has(a[attributionsrc^='/privacy_sandbox/comet/register/source/']),
+html[data-ff-promoted] [data-pagelet^='FeedUnit']:has(a[href*='/ads/about/?entry_product=']),
+html[data-ff-promoted] [data-ff-fb='promoted'] {
+  display: none !important;
+}
+
+/* Reels: the Reels shelf, single Reel posts, and Reels in the top bar and left menu. */
+html[data-ff-reels] [data-pagelet^='FeedUnit']:has(a[href*='/reel/']),
+html[data-ff-reels] [role='banner'] li:has(a[href*='/reel']),
+html[data-ff-reels] [data-pagelet='LeftRail'] li:has(a[href*='/reel']) {
+  display: none !important;
+}
+
+/* Posts from pages and groups you don't follow (marked by the content script). */
+html[data-ff-suggested] [data-ff-fb='suggested'] {
+  display: none !important;
+}
+
+/* Stories at the top of the feed, and Stories carousels placed in the feed. */
+html[data-ff-stories] [data-pagelet='Stories'],
+html[data-ff-stories] [data-ff-fb='stories'] {
+  display: none !important;
+}
+
+/* Marketplace, Gaming and Watch in the top bar and the left menu. */
+html[data-ff-menu] [role='banner'] li:has(a[href*='/marketplace']),
+html[data-ff-menu] [role='banner'] li:has(a[href*='/gaming']),
+html[data-ff-menu] [role='banner'] li:has(a[href*='/watch']),
+html[data-ff-menu] [data-pagelet='LeftRail'] li:has(a[href*='/marketplace']),
+html[data-ff-menu] [data-pagelet='LeftRail'] li:has(a[href*='/gaming']),
+html[data-ff-menu] [data-pagelet='LeftRail'] li:has(a[href*='/watch']) {
+  display: none !important;
+}
+
+/*
+ * The whole right column: friend requests, birthdays and contacts. The left
+ * menu, feed and right column are siblings in one row, so the feed takes the
+ * freed width and Facebook keeps the posts centered inside it.
+ */
+html[data-ff-rightcol] div:has(> [role='main']):has(> [role='complementary'] [data-pagelet='RightRail']) > [role='complementary'] {
+  display: none !important;
+}
+
+html[data-ff-rightcol] div:has(> [role='main']):has(> [role='complementary'] [data-pagelet='RightRail']) > [role='main'] {
+  margin-inline: auto !important;
+}
