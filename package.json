@@ -10,7 +10,7 @@
     "build": "wxt build && wxt build -b firefox",
     "zip": "wxt zip && wxt zip -b firefox",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "lint:firefox": "web-ext lint --source-dir .output/firefox-mv3",
+    "lint:firefox": "npx --yes web-ext@10.8.0 lint --source-dir .output/firefox-mv3",
     "postinstall": "wxt prepare"
   },
   "engines": {
@@ -23,7 +23,6 @@
     "svelte-check": "4.7.6",
     "typescript": "6.0.3",
     "vite": "8.3.4",
-    "web-ext": "10.8.0",
     "wxt": "0.21.4"
   },
   "dependencies": {

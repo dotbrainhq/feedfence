@@ -9,7 +9,8 @@ export default defineConfig({
     name: 'Feedfence',
     description:
       'Hide feeds, Shorts, Reels and sponsored posts on social sites, and see your time and scrolling there.',
-    permissions: ['storage'],
+    // scripting: Chrome only, to add content scripts to tabs open at install or update.
+    permissions: browser === 'firefox' ? ['storage'] : ['storage', 'scripting'],
     action: { default_title: 'Feedfence' },
     ...(browser === 'firefox' && {
       browser_specific_settings: {

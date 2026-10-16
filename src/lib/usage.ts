@@ -42,7 +42,7 @@ export function splitDuration(ms: number): { h: number; m: number } {
 }
 
 export function formatMinutes(ms: number): string {
-  if (ms > 0 && ms < 30_000) return 'under 1 min';
+  if (ms > 0 && ms < 30_000) return '<1 min';
   const { h, m } = splitDuration(ms);
   return h ? `${h} h ${m} min` : `${m} min`;
 }

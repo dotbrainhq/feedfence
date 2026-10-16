@@ -35,7 +35,35 @@ async function pruneOldDays() {
   if (old.length) await browser.storage.local.remove(old);
 }
 
+// Chrome doesn't add content scripts to tabs that were already open when the
+// extension is installed or updated (Firefox does), so those tabs would get no
+// hiding or tracking until refreshed. WXT retires any older copy of a script
+// when a new one starts, so injecting again is safe.
+type ScriptFiles = NonNullable<Parameters<typeof browser.scripting.executeScript>[0]['files']>;
+
+async function injectIntoOpenTabs() {
+  for (const script of browser.runtime.getManifest().content_scripts ?? []) {
+    const tabs = await browser.tabs.query({ url: script.matches ?? [] });
+    for (const tab of tabs) {
+      if (tab.id === undefined || tab.discarded) continue;
+      const target = { tabId: tab.id };
+      try {
+        if (script.css?.length) await browser.scripting.insertCSS({ target, files: script.css as ScriptFiles });
+        if (script.js?.length) await browser.scripting.executeScript({ target, files: script.js as ScriptFiles });
+      } catch {
+        // The tab may have closed or navigated away; it gets scripts on its next load.
+      }
+    }
+  }
+}
+
 export default defineBackground(() => {
+  if (!import.meta.env.FIREFOX) {
+    browser.runtime.onInstalled.addListener(({ reason }) => {
+      if (reason === 'install' || reason === 'update') injectIntoOpenTabs();
+    });
+  }
+
   let queue = Promise.resolve();
   browser.runtime.onMessage.addListener((msg, sender) => {
     if (sender.id !== browser.runtime.id || !isBatch(msg)) return;

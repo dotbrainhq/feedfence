@@ -121,14 +121,14 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-md);
-    padding: 0 var(--space-lg) var(--space-md);
+    padding: 0 var(--space-lg) var(--space-sm);
   }
 
   h1 {
     margin: 0;
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     letter-spacing: -0.03em;
     line-height: 1.1;
   }
@@ -147,7 +147,7 @@
   .seg {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin: 0 var(--space-lg) var(--space-md);
+    margin: 0 var(--space-lg) var(--space-sm);
     padding: 3px;
     border: 1px solid var(--line);
     border-radius: var(--radius-sm);
@@ -195,7 +195,7 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-md);
-    padding: 8px 0;
+    padding: 5px 0;
     border-top: 1px solid var(--line);
   }
 
@@ -206,7 +206,7 @@
   }
 
   .pause {
-    padding: var(--space-md) var(--space-lg) var(--space-lg);
+    padding: var(--space-sm) var(--space-lg) var(--space-md);
   }
 
   .btn {

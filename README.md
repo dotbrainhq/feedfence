@@ -31,13 +31,13 @@ npm install
 npm run dev
 ```
 
-`npm run dev` opens Chrome with the extension loaded and reloads it as you edit. For Firefox, use `npm run dev:firefox`.
+`npm run dev` rebuilds as you edit. Load `.output/chrome-mv3-dev` once as an unpacked extension (steps below), and it reloads itself after each change. For Firefox, run `npm run dev:firefox` and load `.output/firefox-mv3-dev`.
 
 | Command | What it does |
 |---|---|
 | `npm run build` | Builds Chrome and Firefox versions into `.output/`. |
 | `npm run check` | Type-checks the TypeScript and Svelte code. |
-| `npm run lint:firefox` | Runs the Firefox add-on linter on the Firefox build. |
+| `npm run lint:firefox` | Runs the Firefox add-on linter on the Firefox build. It downloads `web-ext` on first use. |
 | `npm run zip` | Packs both builds for store upload, plus the Firefox source ZIP. |
 
 To load a build by hand in Chrome, open `chrome://extensions`, turn on Developer mode, click "Load unpacked" and pick `.output/chrome-mv3`. In Firefox, open `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on" and pick `.output/firefox-mv3/manifest.json`.
