@@ -6,6 +6,8 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ### Fixed
 
+- LinkedIn: a sidebar card that holds an ad next to other content now hides only the ad.
+- LinkedIn profile pages: suggestion cards in the sidebar ("People also viewed", "People you may know", viewer teasers) are hidden with Recommendations, and with Recommendations and ads hidden the sidebar collapses and the profile centers.
 - Chrome: tabs already open when Feedfence is installed or updated now get hiding and tracking without a refresh.
 - Popup: both tabs fit in the space browsers allow, so there are no scrollbars.
 - Removed `web-ext` from the dependencies, which drops the `node-forge` security alert. The Firefox lint downloads it on demand.

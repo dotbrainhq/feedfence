@@ -48,14 +48,36 @@ function markCard(card: Element, depth = 0) {
   // People and company links are the content of a card (who to follow, your pages), not its kind.
   const links = card.querySelectorAll('a[href]:not([href*="/in/"]):not([href*="/company/"]):not([href*="/showcase/"])').length;
   const kindLinks = kinds.reduce((n, k) => n + card.querySelectorAll(CARD_KINDS.find(([kind]) => kind === k)![1]).length, 0);
-  if (kinds.length === 1 && (kindLinks >= links || kinds[0] === 'promoted' && links === 0)) {
+  // An ad is an iframe, not a link, so a card is only an ad when it has no other links.
+  const pure = kinds.length === 1 && (kinds[0] === 'promoted' ? links === 0 : kindLinks >= links);
+  if (pure) {
     card.setAttribute('data-ff-li', kinds[0]!);
     return;
   }
   for (const part of partsOf(card)) markCard(part, depth + 1);
 }
 
+/**
+ * On profile pages the sidebar holds only suggestions ("People also viewed",
+ * "People you may know", viewer teasers), ads and, on your own profile, the
+ * public profile settings card. So every card there except settings and ads
+ * counts as a recommendation, which needs no per-language text.
+ */
+function markProfileSidebar(aside: Element) {
+  for (const top of partsOf(aside)) {
+    const parts = partsOf(top).length >= 2 ? partsOf(top) : [top];
+    for (const part of parts) {
+      if (part.hasAttribute('data-ff-li') || !part.querySelector('a, button, img, iframe')) continue;
+      if (part.querySelector('a[href*="/public-profile/"]')) continue;
+      const ad = part.querySelector('iframe') && !part.querySelector('a[href]');
+      part.setAttribute('data-ff-li', ad ? 'promoted' : 'recommendations');
+    }
+  }
+}
+
 function scan() {
+  const profile = location.pathname.startsWith('/in/');
+  document.documentElement.toggleAttribute('data-ff-li-profile', profile);
   const feed = document.querySelector('[data-testid="mainFeed"]');
   if (feed) {
     for (const item of feed.children) {
@@ -65,7 +87,8 @@ function scan() {
     }
   }
   for (const aside of document.querySelectorAll('aside')) {
-    for (const card of partsOf(aside)) markCard(card);
+    if (profile) markProfileSidebar(aside);
+    else for (const card of partsOf(aside)) markCard(card);
   }
 }
 
