@@ -12,6 +12,7 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ### Added
 
+- X: hide ads, trends and news, who to follow, Premium and Grok prompts, the whole sidebar (the timeline re-centers), or the "For you" timeline (Home opens on Following instead), with Light, Focus and Strict presets.
 - LinkedIn: hide promoted posts and ads, suggested posts, recommendations, games, your stats, or the whole feed, with Light, Focus and Strict presets.
 - Popup: Today comes first, and a Sites tab lists every site with its status and on/off switch. Click a site for its settings; on a supported site the popup opens straight there.
 - Layout closes up around hidden sections: on LinkedIn the feed re-centers and widens when the right sidebar is empty, and on YouTube the player takes the side column when related videos are hidden and nothing else is showing there.

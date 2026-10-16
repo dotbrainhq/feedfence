@@ -1,0 +1,50 @@
+/*
+ * X hide rules. Each rule only applies while its data-ff-<section> attribute
+ * is on <html>. Selectors use data-testid values and link targets, never
+ * visible text. Checked against the signed-in Home timeline on 2026-10-16.
+ */
+
+/* Ads: every regular post shows a timestamp, and ads don't. */
+html[data-ff-promoted] [data-testid='cellInnerDiv']:has(article[data-testid='tweet']):not(:has(time)) {
+  display: none !important;
+}
+
+/* Trends and news. Hides the whole bordered card in the sidebar. */
+html[data-ff-trends] [data-testid='sidebarColumn'] div:has(> section [data-testid='trend']),
+html[data-ff-trends] [data-testid='sidebarColumn'] div:has(> [data-testid='news_sidebar']) {
+  display: none !important;
+}
+
+/* Who to follow: the sidebar card (its border sits one level up) and timeline modules. */
+html[data-ff-follow] [data-testid='sidebarColumn'] div:has(> div > aside [data-testid='UserCell']),
+html[data-ff-follow] [data-testid='primaryColumn'] [data-testid='cellInnerDiv']:has([data-testid='UserCell']),
+html[data-ff-follow] [data-testid='primaryColumn'] [data-testid='cellInnerDiv']:has(a[href^='/i/connect_people']),
+html[data-ff-follow] [data-testid='primaryColumn'] [data-testid='cellInnerDiv']:has(h2):has(+ [data-testid='cellInnerDiv'] [data-testid='UserCell']) {
+  display: none !important;
+}
+
+/*
+ * The whole sidebar, search included (it stays under Explore). The timeline
+ * and sidebar sit at opposite ends of one row, so center the row once the
+ * sidebar is gone instead of leaving an empty column.
+ */
+html[data-ff-sidebar] [data-testid='sidebarColumn'] {
+  display: none !important;
+}
+
+html[data-ff-sidebar] div:has(> [data-testid='primaryColumn']):has(> [data-testid='sidebarColumn']) {
+  justify-content: center !important;
+}
+
+/*
+ * Premium and Grok prompts: the sidebar upsell, the menu links, the floating
+ * Grok button, and the Grok buttons on posts and profiles, matched by the Grok
+ * icon's drawing so it works in every language.
+ */
+html[data-ff-premium] [data-testid='sidebarColumn'] div:has(> aside a[href='/i/premium_sign_up']),
+html[data-ff-premium] header nav a[href='/i/premium'],
+html[data-ff-premium] header nav a[href='/i/grok'],
+html[data-ff-premium] [data-testid='GrokDrawer'],
+html[data-ff-premium] [data-testid='primaryColumn'] button:has(svg path[d^='M12.745 20.54l10.97-8.19']) {
+  display: none !important;
+}
