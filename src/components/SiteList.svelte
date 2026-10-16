@@ -1,7 +1,7 @@
 <script lang="ts">
   import Switch from './Switch.svelte';
   import { HIDE_SITES, SECTIONS, siteSettings, type HideSite, type Settings } from '~/lib/settings';
-  import { siteName } from '~/lib/sites';
+  import { SITES, siteName } from '~/lib/sites';
 
   let {
     settings,
@@ -16,6 +16,10 @@
   } = $props();
 
   const now = Date.now();
+
+  // Sites with time tracking but no hide rules yet.
+  const trackedOnly = SITES.filter((s) => !(HIDE_SITES as string[]).includes(s.id)).map((s) => s.name);
+  const trackedList = trackedOnly.length > 1 ? `${trackedOnly.slice(0, -1).join(', ')} and ${trackedOnly.at(-1)}` : (trackedOnly[0] ?? '');
 
   function status(site: HideSite): string {
     const s = siteSettings(settings, site);
@@ -58,7 +62,7 @@
   {/each}
 </ul>
 
-<p class="note">More sites are on the way. Time is already counted on X, Reddit, Instagram and Facebook.</p>
+{#if trackedList}<p class="note">More sites are on the way. Time is already counted on {trackedList}.</p>{/if}
 
 <style>
   .list {

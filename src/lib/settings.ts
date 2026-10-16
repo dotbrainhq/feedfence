@@ -2,6 +2,7 @@
 export const SECTIONS = {
   youtube: ['shorts', 'home', 'related', 'comments', 'endscreen', 'sponsored'],
   linkedin: ['promoted', 'suggested', 'recommendations', 'games', 'stats', 'feed'],
+  x: ['promoted', 'trends', 'follow', 'premium', 'sidebar', 'foryou'],
 } as const;
 
 export type HideSite = keyof typeof SECTIONS;
@@ -24,8 +25,9 @@ export interface Settings {
   /** Popup theme. Auto follows the light or dark mode the browser reports. Missing in settings saved before 0.1.0. */
   theme?: Theme;
   youtube: SiteSettings;
-  /** Missing in settings saved before LinkedIn support. */
+  /** Missing in settings saved before support for the site. */
   linkedin?: SiteSettings;
+  x?: SiteSettings;
 }
 
 // Each preset adds to the one before it. Things people use on purpose
@@ -40,6 +42,11 @@ const PRESET_SECTIONS: Record<HideSite, Record<Preset, string[]>> = {
     light: ['promoted'],
     focus: ['promoted', 'suggested', 'recommendations', 'games'],
     strict: ['promoted', 'suggested', 'recommendations', 'games', 'stats', 'feed'],
+  },
+  x: {
+    light: ['promoted'],
+    focus: ['promoted', 'trends', 'follow', 'premium', 'sidebar'],
+    strict: ['promoted', 'trends', 'follow', 'premium', 'sidebar', 'foryou'],
   },
 };
 
@@ -60,6 +67,7 @@ export const DEFAULT_SETTINGS: Settings = {
   theme: 'auto',
   youtube: defaultSite('youtube'),
   linkedin: defaultSite('linkedin'),
+  x: defaultSite('x'),
 };
 
 export const PAUSE_MS = 5 * 60 * 1000;
