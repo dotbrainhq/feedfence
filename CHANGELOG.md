@@ -4,6 +4,10 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ## Unreleased
 
+### Changed
+
+- A site set to a preset follows that preset's current sections, so preset changes in an update apply without picking the preset again. Custom switch choices stay as saved.
+
 ### Fixed
 
 - LinkedIn: a sidebar card that holds an ad next to other content now hides only the ad.
@@ -14,6 +18,7 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ### Added
 
+- Facebook: hide sponsored posts and ads, Reels, suggested posts from pages and groups you don't follow, Stories, Marketplace, Gaming and Watch in the top bar and menu, or the whole right column (the feed re-centers), with Light, Focus and Strict presets.
 - Reddit: hide ads, community suggestions in feeds, the Recent posts card, left menu extras (Popular, News, Explore, Games and Resources), or the whole right sidebar, with Light, Focus and Strict presets. The home feed centers once its sidebar is empty.
 - X: hide ads, trends and news, who to follow, Premium and Grok prompts, the whole sidebar (the timeline re-centers), or the "For you" timeline (Home opens on Following instead), with Light, Focus and Strict presets.
 - LinkedIn: hide promoted posts and ads, suggested posts, recommendations, games, your stats, or the whole feed, with Light, Focus and Strict presets.

@@ -4,6 +4,7 @@ export const SECTIONS = {
   linkedin: ['promoted', 'suggested', 'recommendations', 'games', 'stats', 'feed'],
   x: ['promoted', 'trends', 'follow', 'premium', 'sidebar', 'foryou'],
   reddit: ['promoted', 'suggested', 'recent', 'popular', 'sidebar'],
+  facebook: ['promoted', 'reels', 'suggested', 'stories', 'menu', 'rightcol'],
 } as const;
 
 export type HideSite = keyof typeof SECTIONS;
@@ -30,6 +31,7 @@ export interface Settings {
   linkedin?: SiteSettings;
   x?: SiteSettings;
   reddit?: SiteSettings;
+  facebook?: SiteSettings;
 }
 
 // Each preset adds to the one before it. Things people use on purpose
@@ -55,6 +57,11 @@ const PRESET_SECTIONS: Record<HideSite, Record<Preset, string[]>> = {
     focus: ['promoted', 'suggested', 'recent', 'popular'],
     strict: ['promoted', 'suggested', 'recent', 'popular', 'sidebar'],
   },
+  facebook: {
+    light: ['promoted'],
+    focus: ['promoted', 'reels', 'suggested', 'stories'],
+    strict: ['promoted', 'reels', 'suggested', 'stories', 'menu', 'rightcol'],
+  },
 };
 
 export function presetMap(site: HideSite, preset: Preset): HideMap {
@@ -76,6 +83,7 @@ export const DEFAULT_SETTINGS: Settings = {
   linkedin: defaultSite('linkedin'),
   x: defaultSite('x'),
   reddit: defaultSite('reddit'),
+  facebook: defaultSite('facebook'),
 };
 
 export const PAUSE_MS = 5 * 60 * 1000;
@@ -83,8 +91,14 @@ export const PAUSE_MS = 5 * 60 * 1000;
 /** storage.local key. Content scripts read it directly to stay small. */
 export const SETTINGS_KEY = 'settings';
 
+/**
+ * A site's settings. While a preset is chosen, its sections come from the
+ * preset's current definition, so changes to a preset in an update reach
+ * people who picked it. Custom switch choices (preset null) are kept as saved.
+ */
 export function siteSettings(settings: Settings, site: HideSite): SiteSettings {
-  return settings[site] ?? defaultSite(site);
+  const s = settings[site] ?? defaultSite(site);
+  return s.preset ? { ...s, hide: presetMap(site, s.preset) } : s;
 }
 
 /** The sections to hide right now, after the global switch, site switch and pause. */
