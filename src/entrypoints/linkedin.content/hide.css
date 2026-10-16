@@ -1,0 +1,46 @@
+/*
+ * LinkedIn hide rules. Each rule only applies while its data-ff-<section>
+ * attribute is on <html>. Feed posts and sidebar cards carry a data-ff-li
+ * mark set by the content script, since the page itself has no stable
+ * attributes for them. Checked against the signed-in feed on 2026-10-16.
+ */
+
+html[data-ff-promoted] [data-ff-li='promoted'],
+html[data-ff-suggested] [data-ff-li='suggested'],
+html[data-ff-recommendations] [data-ff-li='recommendations'],
+html[data-ff-games] [data-ff-li='games'],
+html[data-ff-stats] [data-ff-li='stats'] {
+  display: none !important;
+}
+
+/*
+ * With games, recommendations and the ad all hidden, the right sidebar is an
+ * empty column. Drop it and re-center: on LinkedIn's 24-column grid the left
+ * sidebar keeps its 5 columns and the feed widens from 12 to 15 (696 px).
+ */
+html[data-ff-games][data-ff-recommendations][data-ff-promoted] div:has(> section [data-testid='mainFeed']) > aside:last-child {
+  display: none !important;
+}
+
+html[data-ff-games][data-ff-recommendations][data-ff-promoted] div:has(> section [data-testid='mainFeed']) > aside:first-child {
+  grid-column: 3 / span 5 !important;
+}
+
+html[data-ff-games][data-ff-recommendations][data-ff-promoted] div:has(> section [data-testid='mainFeed']) > section {
+  grid-column: 8 / span 15 !important;
+}
+
+/* The whole feed, except the "start a post" box at the top. */
+html[data-ff-feed] [data-testid='mainFeed'] > :not(:first-child) {
+  display: none !important;
+}
+
+html[data-ff-feed] [data-testid='mainFeed']::after {
+  content: 'Feed hidden by Feedfence. Posting and search still work.';
+  display: block;
+  padding: 48px 24px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgb(0 0 0 / 0.6);
+}

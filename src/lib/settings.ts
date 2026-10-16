@@ -1,16 +1,14 @@
-export const YOUTUBE_SECTIONS = [
-  'shorts',
-  'home',
-  'related',
-  'comments',
-  'endscreen',
-  'sponsored',
-] as const;
+/** Sites with hide rules, and the sections each one can hide. */
+export const SECTIONS = {
+  youtube: ['shorts', 'home', 'related', 'comments', 'endscreen', 'sponsored'],
+  linkedin: ['promoted', 'suggested', 'recommendations', 'games', 'stats', 'feed'],
+} as const;
 
-export type YoutubeSection = (typeof YOUTUBE_SECTIONS)[number];
+export type HideSite = keyof typeof SECTIONS;
+export const HIDE_SITES = Object.keys(SECTIONS) as HideSite[];
 export type Preset = 'light' | 'focus' | 'strict';
 export type Theme = 'auto' | 'light' | 'dark';
-export type HideMap = Record<YoutubeSection, boolean>;
+export type HideMap = Record<string, boolean>;
 
 export interface SiteSettings {
   enabled: boolean;
@@ -26,46 +24,65 @@ export interface Settings {
   /** Popup theme. Auto follows the light or dark mode the browser reports. Missing in settings saved before 0.1.0. */
   theme?: Theme;
   youtube: SiteSettings;
+  /** Missing in settings saved before LinkedIn support. */
+  linkedin?: SiteSettings;
 }
 
-const none: HideMap = {
-  shorts: false,
-  home: false,
-  related: false,
-  comments: false,
-  endscreen: false,
-  sponsored: false,
+// Each preset adds to the one before it. Things people use on purpose
+// (YouTube comments, posting on LinkedIn) stay visible in every preset.
+const PRESET_SECTIONS: Record<HideSite, Record<Preset, string[]>> = {
+  youtube: {
+    light: ['sponsored'],
+    focus: ['sponsored', 'shorts', 'related', 'endscreen'],
+    strict: ['sponsored', 'shorts', 'related', 'endscreen', 'home'],
+  },
+  linkedin: {
+    light: ['promoted'],
+    focus: ['promoted', 'suggested', 'recommendations', 'games'],
+    strict: ['promoted', 'suggested', 'recommendations', 'games', 'stats', 'feed'],
+  },
 };
 
-// Comments stay visible in every preset: people use them on purpose.
-export const PRESETS: Record<Preset, HideMap> = {
-  light: { ...none, sponsored: true },
-  focus: { ...none, sponsored: true, shorts: true, related: true, endscreen: true },
-  strict: { ...none, sponsored: true, shorts: true, related: true, endscreen: true, home: true },
-};
+export function presetMap(site: HideSite, preset: Preset): HideMap {
+  const on = PRESET_SECTIONS[site][preset];
+  return Object.fromEntries(SECTIONS[site].map((s) => [s, on.includes(s)]));
+}
+
+const defaultSite = (site: HideSite): SiteSettings => ({
+  enabled: true,
+  preset: 'focus',
+  hide: presetMap(site, 'focus'),
+  pausedUntil: 0,
+});
 
 export const DEFAULT_SETTINGS: Settings = {
   enabled: true,
   theme: 'auto',
-  youtube: { enabled: true, preset: 'focus', hide: { ...PRESETS.focus }, pausedUntil: 0 },
+  youtube: defaultSite('youtube'),
+  linkedin: defaultSite('linkedin'),
 };
 
 export const PAUSE_MS = 5 * 60 * 1000;
 
-/** storage.local key. The content script reads it directly to stay small. */
+/** storage.local key. Content scripts read it directly to stay small. */
 export const SETTINGS_KEY = 'settings';
 
+export function siteSettings(settings: Settings, site: HideSite): SiteSettings {
+  return settings[site] ?? defaultSite(site);
+}
+
 /** The sections to hide right now, after the global switch, site switch and pause. */
-export function activeHides(settings: Settings, now = Date.now()): YoutubeSection[] {
-  const site = settings.youtube;
-  if (!settings.enabled || !site.enabled || site.pausedUntil > now) return [];
-  return YOUTUBE_SECTIONS.filter((s) => site.hide[s]);
+export function activeHides(settings: Settings, site: HideSite, now = Date.now()): string[] {
+  const s = siteSettings(settings, site);
+  if (!settings.enabled || !s.enabled || s.pausedUntil > now) return [];
+  return SECTIONS[site].filter((section) => s.hide[section]);
 }
 
 /** Which preset a hide map matches, if any. */
-export function matchPreset(hide: HideMap): Preset | null {
-  for (const [name, map] of Object.entries(PRESETS) as [Preset, HideMap][]) {
-    if (YOUTUBE_SECTIONS.every((s) => map[s] === hide[s])) return name;
+export function matchPreset(site: HideSite, hide: HideMap): Preset | null {
+  for (const preset of ['light', 'focus', 'strict'] as const) {
+    const map = presetMap(site, preset);
+    if (SECTIONS[site].every((s) => map[s] === Boolean(hide[s]))) return preset;
   }
   return null;
 }

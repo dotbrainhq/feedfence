@@ -1,25 +1,30 @@
 <script lang="ts">
   import Switch from './Switch.svelte';
+  import { SECTION_LABELS } from '~/lib/labels';
   import {
     PAUSE_MS,
-    PRESETS,
-    YOUTUBE_SECTIONS,
+    SECTIONS,
     matchPreset,
+    presetMap,
+    siteSettings,
+    type HideSite,
     type Preset,
     type Settings,
-    type YoutubeSection,
   } from '~/lib/settings';
+  import { siteName } from '~/lib/sites';
 
-  let { settings, save }: { settings: Settings; save: (change: (draft: Settings) => void) => void } = $props();
+  let {
+    settings,
+    save,
+    site,
+    onback,
+  }: {
+    settings: Settings;
+    save: (change: (draft: Settings) => void) => void;
+    site: HideSite;
+    onback: () => void;
+  } = $props();
 
-  const SECTIONS: Record<YoutubeSection, { label: string; note?: string }> = {
-    shorts: { label: 'Shorts', note: 'Everywhere on the site' },
-    home: { label: 'Home page recommendations', note: 'Search and subscriptions stay' },
-    related: { label: 'Related videos', note: 'Next to the player' },
-    comments: { label: 'Comments' },
-    endscreen: { label: 'End screen suggestions', note: 'Cards and suggestions on the player' },
-    sponsored: { label: 'Sponsored tiles', note: 'Video ads are left alone' },
-  };
   const PRESET_NAMES: { id: Preset; label: string }[] = [
     { id: 'light', label: 'Light' },
     { id: 'focus', label: 'Focus' },
@@ -27,11 +32,14 @@
   ];
 
   let now = $state(Date.now());
-  const site = $derived(settings.youtube);
-  const paused = $derived(site.pausedUntil > now);
-  const minutesLeft = $derived(Math.max(1, Math.ceil((site.pausedUntil - now) / 60000)));
-  const hiddenCount = $derived(YOUTUBE_SECTIONS.filter((s) => site.hide[s]).length);
-  const active = $derived(settings.enabled && site.enabled);
+  const s = $derived(siteSettings(settings, site));
+  const sections = $derived(SECTIONS[site]);
+  const labels = $derived(SECTION_LABELS[site]);
+  const name = $derived(siteName(site));
+  const paused = $derived(s.pausedUntil > now);
+  const minutesLeft = $derived(Math.max(1, Math.ceil((s.pausedUntil - now) / 60000)));
+  const hiddenCount = $derived(sections.filter((x) => s.hide[x]).length);
+  const active = $derived(settings.enabled && s.enabled);
 
   // The countdown only ticks while the popup is open and a pause is running.
   $effect(() => {
@@ -40,66 +48,78 @@
     return () => clearInterval(id);
   });
 
-  const setPreset = (preset: Preset) =>
-    save((s) => {
-      s.youtube.preset = preset;
-      s.youtube.hide = { ...PRESETS[preset] };
+  /** Changes this site's settings, creating them from defaults if they were never saved. */
+  const saveSite = (change: (site: ReturnType<typeof siteSettings>) => void) =>
+    save((draft) => {
+      const current = siteSettings(draft, site);
+      change(current);
+      draft[site] = current;
     });
 
-  const setSection = (section: YoutubeSection, hide: boolean) =>
-    save((s) => {
-      s.youtube.hide[section] = hide;
-      s.youtube.preset = matchPreset(s.youtube.hide);
+  const setPreset = (preset: Preset) =>
+    saveSite((x) => {
+      x.preset = preset;
+      x.hide = presetMap(site, preset);
+    });
+
+  const setSection = (section: string, hide: boolean) =>
+    saveSite((x) => {
+      x.hide[section] = hide;
+      x.preset = matchPreset(site, x.hide);
     });
 
   const pause = () => {
     now = Date.now();
-    save((s) => (s.youtube.pausedUntil = now + PAUSE_MS));
+    saveSite((x) => (x.pausedUntil = now + PAUSE_MS));
   };
-  const resume = () => save((s) => (s.youtube.pausedUntil = 0));
+  const resume = () => saveSite((x) => (x.pausedUntil = 0));
 </script>
 
 <div class="site-head">
-  <div>
-    <h1>YouTube</h1>
-    <p class="status">
-      {#if !settings.enabled}
-        Feedfence is off everywhere
-      {:else if !site.enabled}
-        Off on YouTube
-      {:else if paused}
-        Everything shows for {minutesLeft} more min
-      {:else}
-        <b>{hiddenCount} {hiddenCount === 1 ? 'section' : 'sections'}</b> hidden
-      {/if}
-    </p>
+  <div class="title">
+    <button class="back" onclick={onback} aria-label="All sites" title="All sites">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" /></svg>
+    </button>
+    <h2>{name}</h2>
   </div>
   <Switch
-    checked={site.enabled}
-    label="Feedfence on YouTube"
+    checked={s.enabled}
+    label={`Feedfence on ${name}`}
     disabled={!settings.enabled}
-    onchange={(v) => save((s) => (s.youtube.enabled = v))}
+    onchange={(v) => saveSite((x) => (x.enabled = v))}
   />
 </div>
 
+<p class="status">
+  {#if !settings.enabled}
+    Feedfence is off everywhere
+  {:else if !s.enabled}
+    Off on {name}
+  {:else if paused}
+    Everything shows on {name} for {minutesLeft} more min
+  {:else}
+    <b>{hiddenCount} {hiddenCount === 1 ? 'section' : 'sections'}</b> hidden on {name}
+  {/if}
+</p>
+
 <div class="seg" role="group" aria-label="Preset">
   {#each PRESET_NAMES as p (p.id)}
-    <button aria-pressed={site.preset === p.id} disabled={!active} onclick={() => setPreset(p.id)}>
+    <button aria-pressed={s.preset === p.id} disabled={!active} onclick={() => setPreset(p.id)}>
       {p.label}
     </button>
   {/each}
 </div>
 
 <ul class="hides">
-  {#each YOUTUBE_SECTIONS as section (section)}
+  {#each sections as section (section)}
     <li>
       <span>
-        {SECTIONS[section].label}
-        {#if SECTIONS[section].note}<small>{SECTIONS[section].note}</small>{/if}
+        {labels[section]?.label}
+        {#if labels[section]?.note}<small>{labels[section]?.note}</small>{/if}
       </span>
       <Switch
-        checked={site.hide[section]}
-        label={`Hide ${SECTIONS[section].label.toLowerCase()}`}
+        checked={Boolean(s.hide[section])}
+        label={`Hide ${labels[section]?.label.toLowerCase()}`}
         disabled={!active}
         onchange={(v) => setSection(section, v)}
       />
@@ -124,7 +144,46 @@
     padding: 0 var(--space-lg) var(--space-sm);
   }
 
-  h1 {
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    margin-left: -6px;
+  }
+
+  .back {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .back svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: var(--text-2);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .back:hover {
+    background: var(--surface-2);
+  }
+
+  .back:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+
+  h2 {
     margin: 0;
     font-family: var(--font-display);
     font-weight: 800;
@@ -134,7 +193,8 @@
   }
 
   .status {
-    margin: 2px 0 0;
+    margin: 0;
+    padding: 0 var(--space-lg) var(--space-sm);
     font-size: 0.8125rem;
     color: var(--text-2);
   }
@@ -195,7 +255,7 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-md);
-    padding: 5px 0;
+    padding: 4px 0;
     border-top: 1px solid var(--line);
   }
 
@@ -206,7 +266,7 @@
   }
 
   .pause {
-    padding: var(--space-sm) var(--space-lg) var(--space-md);
+    padding: var(--space-sm) var(--space-lg);
   }
 
   .btn {

@@ -1,30 +1,40 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import SiteList from '~/components/SiteList.svelte';
   import SitePanel from '~/components/SitePanel.svelte';
   import Switch from '~/components/Switch.svelte';
   import ThemePicker from '~/components/ThemePicker.svelte';
   import TodayPanel from '~/components/TodayPanel.svelte';
-  import { DEFAULT_SETTINGS, type Settings, type Theme } from '~/lib/settings';
+  import { DEFAULT_SETTINGS, HIDE_SITES, type HideSite, type Settings, type Theme } from '~/lib/settings';
   import { settingsItem } from '~/lib/settings-store';
   import { siteForHost } from '~/lib/sites';
   import { THEME_CACHE_KEY } from './theme';
 
   type Tab = 'site' | 'today';
-  const TABS: { id: Tab; label: string }[] = [
-    { id: 'site', label: 'YouTube' },
-    { id: 'today', label: 'Today' },
-  ];
 
   let settings = $state<Settings>(structuredClone(DEFAULT_SETTINGS));
   let tab = $state<Tab | null>(null);
+  /** The site whose settings are open, or null for the list of sites. */
+  let site = $state<HideSite | null>(null);
+  let here = $state<HideSite | null>(null);
+  const TABS: { id: Tab; label: string }[] = [
+    { id: 'today', label: 'Today' },
+    { id: 'site', label: 'Sites' },
+  ];
   const theme = $derived<Theme>(settings.theme ?? 'auto');
 
   onMount(() => {
     settingsItem.getValue().then((value) => (settings = value));
-    // The site tab opens first on YouTube; everywhere else, Today does.
+    // On a site with hide rules the popup opens on that site; everywhere else, on Today.
     browser.tabs
       .query({ active: true, currentWindow: true })
-      .then(([t]) => (tab = t?.url && siteForHost(new URL(t.url).hostname) === 'youtube' ? 'site' : 'today'))
+      .then(([t]) => {
+        const onSite = t?.url ? siteForHost(new URL(t.url).hostname) : undefined;
+        if (onSite && (HIDE_SITES as string[]).includes(onSite)) {
+          here = site = onSite as HideSite;
+          tab = 'site';
+        } else tab = 'today';
+      })
       .catch(() => (tab = 'today'));
     return settingsItem.watch((value) => (settings = value));
   });
@@ -97,7 +107,11 @@
 
     <div class="panel" id={`panel-${tab}`} role="tabpanel" aria-labelledby={`tab-${tab}`}>
       {#if tab === 'site'}
-        <SitePanel {settings} {save} />
+        {#if site}
+          <SitePanel {settings} {save} {site} onback={() => (site = null)} />
+        {:else}
+          <SiteList {settings} {save} {here} onopen={(s) => (site = s)} />
+        {/if}
       {:else}
         <TodayPanel />
       {/if}
@@ -158,7 +172,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2px;
-    margin: var(--space-xs) var(--space-lg) var(--space-md);
+    margin: var(--space-xs) var(--space-lg) var(--space-sm);
     padding: 3px;
     border-radius: var(--radius-sm);
     background: var(--surface-2);
@@ -194,7 +208,7 @@
   .foot {
     display: flex;
     justify-content: flex-end;
-    padding: var(--space-md) var(--space-lg);
+    padding: var(--space-sm) var(--space-lg);
     border-top: 1px solid var(--line);
   }
 </style>
