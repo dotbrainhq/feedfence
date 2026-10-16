@@ -51,8 +51,30 @@
   color-scheme: light;
 }
 
+/* Dark: chosen in the popup, or Auto while the browser reports dark mode. */
+:root[data-theme='dark'] {
+  --bg: var(--forest);
+  --surface: var(--forest-2);
+  --surface-2: var(--forest-2);
+  --text: var(--white);
+  --text-2: var(--on-dark-2);
+  --text-3: var(--on-dark-2);
+  --line: var(--rule-dark);
+  --accent: var(--lime);
+  --accent-ink: var(--lime);
+  --focus: var(--lime);
+  --switch-off: var(--forest-3);
+  --switch-on: var(--lime);
+  --knob: var(--white);
+  --knob-on: var(--forest);
+  --primary-bg: var(--lime);
+  --primary-fg: var(--forest);
+  --primary-hover: var(--white);
+  color-scheme: dark;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: var(--forest);
     --surface: var(--forest-2);
     --surface-2: var(--forest-2);

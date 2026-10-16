@@ -9,6 +9,7 @@ export const YOUTUBE_SECTIONS = [
 
 export type YoutubeSection = (typeof YOUTUBE_SECTIONS)[number];
 export type Preset = 'light' | 'focus' | 'strict';
+export type Theme = 'auto' | 'light' | 'dark';
 export type HideMap = Record<YoutubeSection, boolean>;
 
 export interface SiteSettings {
@@ -22,6 +23,8 @@ export interface SiteSettings {
 
 export interface Settings {
   enabled: boolean;
+  /** Popup theme. Auto follows the light or dark mode the browser reports. Missing in settings saved before 0.1.0. */
+  theme?: Theme;
   youtube: SiteSettings;
 }
 
@@ -43,6 +46,7 @@ export const PRESETS: Record<Preset, HideMap> = {
 
 export const DEFAULT_SETTINGS: Settings = {
   enabled: true,
+  theme: 'auto',
   youtube: { enabled: true, preset: 'focus', hide: { ...PRESETS.focus }, pausedUntil: 0 },
 };
 

@@ -4,6 +4,9 @@ import '@fontsource/instrument-sans/latin-600.css';
 import '~/assets/tokens.css';
 import { mount } from 'svelte';
 import App from './App.svelte';
+import { applyCachedTheme } from './theme';
+
+applyCachedTheme();
 
 const target = document.getElementById('app');
 if (!target) throw new Error('Popup root #app is missing');
