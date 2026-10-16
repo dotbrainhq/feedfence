@@ -40,6 +40,17 @@ html[data-ff-related] ytd-watch-flexy #related {
   display: none !important;
 }
 
+/*
+ * With related videos hidden and nothing else showing in the side column (no
+ * playlist, live chat or open panel such as the transcript), drop the column
+ * so the player takes its width. Theater and fullscreen already do that.
+ */
+html[data-ff-related]
+  ytd-watch-flexy:not([theater]):not([fullscreen]):not(:has(ytd-playlist-panel-renderer:not([hidden]))):not(:has(ytd-live-chat-frame:not([collapsed]))):not(:has(ytd-engagement-panel-section-list-renderer[visibility='ENGAGEMENT_PANEL_VISIBILITY_EXPANDED']))
+  #secondary {
+  display: none !important;
+}
+
 /* Comments under the video and in the side panel. */
 html[data-ff-comments] ytd-watch-flexy ytd-comments#comments,
 html[data-ff-comments] ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"] {
