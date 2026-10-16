@@ -189,10 +189,10 @@
 
   .sites li {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 54px 64px;
+    grid-template-columns: minmax(0, 1fr) 54px 60px;
     align-items: center;
     gap: var(--space-md);
-    padding: 8px 0;
+    padding: 5px 0;
     border-top: 1px solid var(--line);
   }
 
