@@ -16,9 +16,12 @@ Run these and make sure they pass:
 
 ```
 npm run check
+npm test
 npm run build
 npm run lint:firefox
 ```
+
+Unit tests sit next to the code they cover (`src/lib/*.test.ts`). Add one when you change the limit, usage, settings or export logic.
 
 Then load the build in Chrome and Firefox and try the change by hand. Add before and after screenshots for anything someone can see.
 

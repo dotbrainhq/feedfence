@@ -1,4 +1,4 @@
-# CI for Feedfence: type-check, build for Chrome and Firefox, then run the Firefox add-on linter.
+# CI for Feedfence: type-check, unit tests, build for Chrome and Firefox, then the Firefox add-on linter.
 # Branch protection requires only the final "CI passed" job.
 name: CI
 
