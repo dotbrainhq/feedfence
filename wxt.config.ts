@@ -25,7 +25,8 @@ export default defineConfig({
     description:
       'Hide feeds, Shorts, Reels and sponsored posts on social sites, and see your time and scrolling there.',
     // scripting: Chrome only, to add content scripts to tabs open at install or update.
-    permissions: browser === 'firefox' ? ['storage'] : ['storage', 'scripting'],
+    // alarms: to start and end focus hours on time. Neither shows a permission prompt.
+    permissions: browser === 'firefox' ? ['storage', 'alarms'] : ['storage', 'alarms', 'scripting'],
     homepage_url: 'https://dotbrainhq.com',
     action: { default_title: 'Feedfence' },
     ...(browser === 'firefox' && {

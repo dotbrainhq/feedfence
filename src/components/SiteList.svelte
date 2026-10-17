@@ -1,6 +1,7 @@
 <script lang="ts">
   import Switch from './Switch.svelte';
-  import { HIDE_SITES, SECTIONS, siteSettings, type HideSite, type Settings } from '~/lib/settings';
+  import { DEFAULT_FOCUS, focusStatus, inFocus } from '~/lib/schedule';
+  import { HIDE_SITES, SECTIONS, activeHides, siteSettings, type HideSite, type Settings } from '~/lib/settings';
   import { SITES, siteName } from '~/lib/sites';
 
   let {
@@ -8,14 +9,21 @@
     save,
     here,
     onopen,
+    onfocus,
   }: {
     settings: Settings;
     save: (change: (draft: Settings) => void) => void;
     here: HideSite | null;
     onopen: (site: HideSite) => void;
+    onfocus: () => void;
   } = $props();
 
   const now = Date.now();
+  const focus = $derived({ ...DEFAULT_FOCUS, ...settings.focus });
+  const focusNow = $derived(inFocus(focus, new Date(now)) ? focus.preset : null);
+  const focusLine = $derived(
+    focus.on ? `${focusStatus(focus, new Date(now))} · ${focus.preset === 'strict' ? 'Strict' : 'Focus'}` : 'Off',
+  );
 
   // Sites with time tracking but no hide rules yet.
   const trackedOnly = SITES.filter((s) => !(HIDE_SITES as string[]).includes(s.id)).map((s) => s.name);
@@ -27,8 +35,8 @@
     if (!s.enabled) return 'Off';
     if (s.pausedUntil > now) return `Everything shows for ${Math.max(1, Math.ceil((s.pausedUntil - now) / 60000))} more min`;
     const total = SECTIONS[site].length;
-    const hidden = SECTIONS[site].filter((x) => s.hide[x]).length;
-    return `${hidden} of ${total} sections hidden`;
+    const hidden = activeHides(settings, site, now, focusNow).length;
+    return `${hidden} of ${total} sections hidden${focusNow ? ' for focus hours' : ''}`;
   }
 
   const setEnabled = (site: HideSite, enabled: boolean) =>
@@ -40,6 +48,21 @@
 </script>
 
 <ul class="list">
+  <li class="focus-row">
+    <button class="open" onclick={onfocus}>
+      <span class="text">
+        <span class="name">Focus hours</span>
+        <span class="status" class:running={focusNow}>{focusLine}</span>
+      </span>
+      <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
+    </button>
+    <Switch
+      checked={focus.on}
+      label="Focus hours on"
+      disabled={!settings.enabled}
+      onchange={(v) => save((draft) => (draft.focus = { ...DEFAULT_FOCUS, ...draft.focus, on: v }))}
+    />
+  </li>
   {#each HIDE_SITES as site (site)}
     <li>
       <button class="open" onclick={() => onopen(site)}>
@@ -62,7 +85,7 @@
   {/each}
 </ul>
 
-{#if trackedList}<p class="note">More sites are on the way. Time is already counted on {trackedList}.</p>{/if}
+{#if trackedList}<p class="note">{trackedList}: time only for now.</p>{/if}
 
 <style>
   .list {
@@ -88,13 +111,22 @@
     align-items: center;
     gap: var(--space-sm);
     min-width: 0;
-    padding: var(--space-md) 0;
+    padding: 10px 0;
     border: 0;
     background: transparent;
     color: var(--text);
     font: inherit;
     text-align: left;
     cursor: pointer;
+  }
+
+  .focus-row {
+    border-bottom-width: 2px;
+  }
+
+  .status.running {
+    font-weight: 600;
+    color: var(--accent-ink);
   }
 
   .text {

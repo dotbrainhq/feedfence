@@ -1,4 +1,5 @@
 import type { LimitSettings } from './limit';
+import type { FocusHours } from './schedule';
 
 /** Sites with hide rules, and the sections each one can hide. */
 export const SECTIONS = {
@@ -30,6 +31,7 @@ export interface Settings {
   theme?: Theme;
   /** Daily limit for all tracked sites together. Missing until someone sets one. */
   limit?: LimitSettings;
+  focus?: FocusHours;
   youtube: SiteSettings;
   /** Missing in settings saved before support for the site. */
   linkedin?: SiteSettings;
@@ -96,6 +98,13 @@ export const PAUSE_MS = 5 * 60 * 1000;
 export const SETTINGS_KEY = 'settings';
 
 /**
+ * storage.local key for the preset focus hours apply right now, or null outside them. The background
+ * script keeps it current with an alarm, so content scripts read one value instead of doing the math.
+ */
+export const FOCUS_NOW_KEY = 'focusNow';
+export type FocusNow = 'focus' | 'strict' | null;
+
+/**
  * A site's settings. While a preset is chosen, its sections come from the
  * preset's current definition, so changes to a preset in an update reach
  * people who picked it. Custom switch choices (preset null) are kept as saved.
@@ -105,11 +114,13 @@ export function siteSettings(settings: Settings, site: HideSite): SiteSettings {
   return s.preset ? { ...s, hide: presetMap(site, s.preset) } : s;
 }
 
-/** The sections to hide right now, after the global switch, site switch and pause. */
-export function activeHides(settings: Settings, site: HideSite, now = Date.now()): string[] {
+/** The sections to hide right now, after the global switch, site switch, pause and focus hours. */
+export function activeHides(settings: Settings, site: HideSite, now = Date.now(), focus: FocusNow = null): string[] {
   const s = siteSettings(settings, site);
   if (!settings.enabled || !s.enabled || s.pausedUntil > now) return [];
-  return SECTIONS[site].filter((section) => s.hide[section]);
+  // During focus hours a site hides at least what the focus preset hides, never less than its own choice.
+  const extra = focus ? presetMap(site, focus) : {};
+  return SECTIONS[site].filter((section) => s.hide[section] || extra[section]);
 }
 
 /** Which preset a hide map matches, if any. */

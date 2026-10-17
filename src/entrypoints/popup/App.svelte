@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import FocusPanel from '~/components/FocusPanel.svelte';
   import LimitPanel from '~/components/LimitPanel.svelte';
   import SiteList from '~/components/SiteList.svelte';
   import SitePanel from '~/components/SitePanel.svelte';
@@ -17,6 +18,7 @@
   let tab = $state<Tab | null>(null);
   /** The site whose settings are open, or null for the list of sites. */
   let site = $state<HideSite | null>(null);
+  let focusOpen = $state(false);
   let here = $state<HideSite | null>(null);
   const TABS: { id: Tab; label: string }[] = [
     { id: 'today', label: 'Today' },
@@ -114,10 +116,12 @@
 
     <div class="panel" id={`panel-${tab}`} role="tabpanel" aria-labelledby={`tab-${tab}`}>
       {#if tab === 'site'}
-        {#if site}
+        {#if focusOpen}
+          <FocusPanel {settings} {save} onback={() => (focusOpen = false)} />
+        {:else if site}
           <SitePanel {settings} {save} {site} onback={() => (site = null)} />
         {:else}
-          <SiteList {settings} {save} {here} onopen={(s) => (site = s)} />
+          <SiteList {settings} {save} {here} onopen={(s) => (site = s)} onfocus={() => (focusOpen = true)} />
         {/if}
       {:else if tab === 'limit'}
         <LimitPanel {settings} {save} />

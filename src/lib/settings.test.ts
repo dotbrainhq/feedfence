@@ -74,6 +74,16 @@ describe('activeHides', () => {
     expect(activeHides(withYouTube({ enabled: false }), 'youtube', now)).toEqual([]);
   });
 
+  it('adds the focus preset’s sections during focus hours, keeping the site’s own', () => {
+    const custom = withYouTube({ preset: null, hide: { ...presetMap('youtube', 'light'), comments: true } });
+    const hiddenNow = activeHides(custom, 'youtube', now, 'strict').sort();
+    expect(hiddenNow).toEqual([...new Set([...hidden(presetMap('youtube', 'strict')), 'comments'])].sort());
+  });
+
+  it('leaves a site that is off alone during focus hours', () => {
+    expect(activeHides(withYouTube({ enabled: false }), 'youtube', now, 'strict')).toEqual([]);
+  });
+
   it('hides nothing during a pause, and hides again once it ends', () => {
     const paused = withYouTube({ pausedUntil: now + 1 });
     expect(activeHides(paused, 'youtube', now)).toEqual([]);

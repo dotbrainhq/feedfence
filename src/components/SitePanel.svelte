@@ -11,6 +11,7 @@
     type Preset,
     type Settings,
   } from '~/lib/settings';
+  import { formatClock, inFocus, nextFocusChange } from '~/lib/schedule';
   import { siteName } from '~/lib/sites';
 
   let {
@@ -40,6 +41,12 @@
   const minutesLeft = $derived(Math.max(1, Math.ceil((s.pausedUntil - now) / 60000)));
   const hiddenCount = $derived(sections.filter((x) => s.hide[x]).length);
   const active = $derived(settings.enabled && s.enabled);
+  // Focus hours add their preset's sections on top of this site's own choices.
+  const focusUntil = $derived.by(() => {
+    if (!inFocus(settings.focus, new Date(now))) return null;
+    const end = nextFocusChange(settings.focus, new Date(now));
+    return end ? formatClock(end.getHours() * 60 + end.getMinutes()) : '';
+  });
 
   // The countdown only ticks while the popup is open and a pause is running.
   $effect(() => {
@@ -101,6 +108,11 @@
     <b>{hiddenCount} {hiddenCount === 1 ? 'section' : 'sections'}</b> hidden on {name}
   {/if}
 </p>
+{#if active && !paused && focusUntil !== null}
+  <p class="focus-note">
+    Focus hours{focusUntil ? ` until ${focusUntil}` : ''} also hide what {settings.focus?.preset === 'strict' ? 'Strict' : 'Focus'} hides.
+  </p>
+{/if}
 
 <div class="seg" role="group" aria-label="Preset">
   {#each PRESET_NAMES as p (p.id)}
@@ -200,6 +212,14 @@
   }
 
   .status b {
+    font-weight: 600;
+    color: var(--accent-ink);
+  }
+
+  .focus-note {
+    margin: 0;
+    padding: 0 var(--space-lg) var(--space-sm);
+    font-size: 0.75rem;
     font-weight: 600;
     color: var(--accent-ink);
   }
