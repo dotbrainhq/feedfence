@@ -30,6 +30,7 @@ Sites change their markup often, and this is the most common kind of fix.
 - **Avoid text matching:** words like "Shorts" or "Sponsored" change with the user's language.
 - **Hide, don't remove:** use `display: none`. Removing nodes breaks the site's own code.
 - **Check a second language:** confirm the rule still works with the site set to a language other than English.
+- **Re-test the whole site:** run through its section in [docs/site-checks.md](docs/site-checks.md) and update its **Last verified** line in the same pull request.
 
 ## Performance rules
 
