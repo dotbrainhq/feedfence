@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import LimitPanel from '~/components/LimitPanel.svelte';
   import SiteList from '~/components/SiteList.svelte';
   import SitePanel from '~/components/SitePanel.svelte';
   import Switch from '~/components/Switch.svelte';
@@ -10,7 +11,7 @@
   import { siteForHost } from '~/lib/sites';
   import { THEME_CACHE_KEY } from './theme';
 
-  type Tab = 'site' | 'today';
+  type Tab = 'site' | 'today' | 'limit';
 
   let settings = $state<Settings>(structuredClone(DEFAULT_SETTINGS));
   let tab = $state<Tab | null>(null);
@@ -20,6 +21,7 @@
   const TABS: { id: Tab; label: string }[] = [
     { id: 'today', label: 'Today' },
     { id: 'site', label: 'Sites' },
+    { id: 'limit', label: 'Limit' },
   ];
   const theme = $derived<Theme>(settings.theme ?? 'auto');
 
@@ -112,6 +114,8 @@
         {:else}
           <SiteList {settings} {save} {here} onopen={(s) => (site = s)} />
         {/if}
+      {:else if tab === 'limit'}
+        <LimitPanel {settings} {save} />
       {:else}
         <TodayPanel />
       {/if}
@@ -170,7 +174,7 @@
 
   .tabs {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 2px;
     margin: var(--space-xs) var(--space-lg) var(--space-sm);
     padding: 3px;
