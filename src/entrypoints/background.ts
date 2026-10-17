@@ -1,4 +1,7 @@
+import { SNOOZE_MS } from '~/lib/limit';
+import { SETTINGS_KEY, type Settings } from '~/lib/settings';
 import { SITE_IDS } from '~/lib/sites';
+import { updateToolbarIcon } from '~/lib/toolbar-icon';
 import { KEEP_DAYS, USAGE_PREFIX, dayKey, lastDayKeys, type DayUsage, type UsageBatch } from '~/lib/usage';
 
 // The single writer for usage stats. Content scripts in every tab send
@@ -26,6 +29,15 @@ async function record(batch: UsageBatch) {
   day[batch.site] = { ms: site.ms + batch.ms, px: site.px + batch.px };
   await browser.storage.local.set({ [key]: day });
   if (isNewDay) await pruneOldDays();
+}
+
+// "5 more minutes" on the limit reminder: one snooze for every tab.
+async function snooze() {
+  const stored = await browser.storage.local.get(SETTINGS_KEY);
+  const settings = stored[SETTINGS_KEY] as Settings | undefined;
+  if (!settings?.limit) return;
+  settings.limit.snoozedUntil = Date.now() + SNOOZE_MS;
+  await browser.storage.local.set({ [SETTINGS_KEY]: settings });
 }
 
 async function pruneOldDays() {
@@ -66,7 +78,16 @@ export default defineBackground(() => {
 
   let queue = Promise.resolve();
   browser.runtime.onMessage.addListener((msg, sender) => {
-    if (sender.id !== browser.runtime.id || !isBatch(msg)) return;
-    queue = queue.then(() => record(msg)).catch(() => {});
+    if (sender.id !== browser.runtime.id) return;
+    const type = (msg as { type?: unknown })?.type;
+    if (type === 'close-tab' && sender.tab?.id !== undefined) browser.tabs.remove(sender.tab.id).catch(() => {});
+    else if (type === 'snooze') snooze().catch(() => {});
+    else if (isBatch(msg)) queue = queue.then(() => record(msg)).then(updateToolbarIcon).catch(() => {});
+  });
+
+  // The icon follows the limit and today's time: on start, after each batch and when settings change.
+  updateToolbarIcon().catch(() => {});
+  browser.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && SETTINGS_KEY in changes) updateToolbarIcon().catch(() => {});
   });
 });

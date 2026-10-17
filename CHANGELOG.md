@@ -18,6 +18,7 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ### Added
 
+- Daily limit: one limit for all social sites together, off by default. The popup's Limit tab shows the day filling a loop, with time per site. Lowering the limit applies right away; raising it or turning it off applies the next day. At the limit, each social tab shows a reminder with Close this tab or 5 more minutes, and pauses video and audio. The toolbar icon fills as the day adds up.
 - Facebook: hide sponsored posts and ads, Reels, suggested posts from pages and groups you don't follow, Stories, Marketplace, Gaming and Watch in the top bar and menu, or the whole right column (the feed re-centers), with Light, Focus and Strict presets.
 - Reddit: hide ads, community suggestions in feeds, the Recent posts card, left menu extras (Popular, News, Explore, Games and Resources), or the whole right sidebar, with Light, Focus and Strict presets. The home feed centers once its sidebar is empty.
 - X: hide ads, trends and news, who to follow, Premium and Grok prompts, the whole sidebar (the timeline re-centers), or the "For you" timeline (Home opens on Following instead), with Light, Focus and Strict presets.

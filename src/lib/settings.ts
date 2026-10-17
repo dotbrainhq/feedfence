@@ -1,3 +1,5 @@
+import type { LimitSettings } from './limit';
+
 /** Sites with hide rules, and the sections each one can hide. */
 export const SECTIONS = {
   youtube: ['shorts', 'home', 'related', 'comments', 'endscreen', 'sponsored'],
@@ -26,6 +28,8 @@ export interface Settings {
   enabled: boolean;
   /** Popup theme. Auto follows the light or dark mode the browser reports. Missing in settings saved before 0.1.0. */
   theme?: Theme;
+  /** Daily limit for all tracked sites together. Missing until someone sets one. */
+  limit?: LimitSettings;
   youtube: SiteSettings;
   /** Missing in settings saved before support for the site. */
   linkedin?: SiteSettings;
@@ -79,11 +83,11 @@ const defaultSite = (site: HideSite): SiteSettings => ({
 export const DEFAULT_SETTINGS: Settings = {
   enabled: true,
   theme: 'auto',
-  youtube: defaultSite('youtube'),
-  linkedin: defaultSite('linkedin'),
-  x: defaultSite('x'),
-  reddit: defaultSite('reddit'),
-  facebook: defaultSite('facebook'),
+  youtube: /* @__PURE__ */ defaultSite('youtube'),
+  linkedin: /* @__PURE__ */ defaultSite('linkedin'),
+  x: /* @__PURE__ */ defaultSite('x'),
+  reddit: /* @__PURE__ */ defaultSite('reddit'),
+  facebook: /* @__PURE__ */ defaultSite('facebook'),
 };
 
 export const PAUSE_MS = 5 * 60 * 1000;
