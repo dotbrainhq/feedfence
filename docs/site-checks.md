@@ -89,6 +89,7 @@ Check these after changes to the meter, the limit or the background script, on a
 3. Set a 30 min limit with more time than that used today, then open a social tab. The reminder shows and video pauses. "5 more minutes" clears it in every tab.
 4. Reload Feedfence with a social tab open, then return to the tab. No errors in its console.
 5. Set focus hours to end a minute from now, with Strict, and keep a YouTube tab open. Strict's sections hide right away and come back at the end minute, without a reload.
+6. Turn on the pause in the Limit tab, then open a social site in a new tab. The pause shows, Continue unlocks after 5 seconds, and a reload in that tab doesn't pause again.
 
 ## Not confirmed yet
 

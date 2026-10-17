@@ -6,8 +6,13 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ### Added
 
+- Intention pause: an optional few seconds before a social site opens, once per tab, asking what you're there for. Continue unlocks after 5 seconds; closing the tab or turning the pause off for that site works right away. Off by default, set in the Limit tab.
 - Focus hours: pick days and a time range, and every site hides at least what Focus or Strict hides during them, then goes back to its own settings. Ranges can run past midnight, and the switch happens on its own on open tabs. Feedfence asks for the `alarms` permission to switch on time; it shows no prompt.
 - Daily limit: a Custom choice, in the popup and on the welcome page, for any limit from 5 minutes to 12 hours. It follows the same rule as the other choices: lowering applies now, raising waits until tomorrow.
+
+### Fixed
+
+- Limit tab: with no time used yet, the loop no longer shows two stray dots.
 
 ## 0.1.0 (October 17, 2026)
 
