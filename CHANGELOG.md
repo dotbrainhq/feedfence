@@ -15,6 +15,7 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 - Chrome: tabs already open when Feedfence is installed or updated now get hiding and tracking without a refresh.
 - Popup: both tabs fit in the space browsers allow, so there are no scrollbars.
 - Removed `web-ext` from the dependencies, which drops the `node-forge` security alert. The Firefox lint downloads it on demand.
+- Social tabs left open while Feedfence is updated or reloaded no longer log an "Extension context invalidated" error when you return to them.
 
 ### Added
 

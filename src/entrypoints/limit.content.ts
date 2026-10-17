@@ -62,6 +62,9 @@ export default defineContentScript({
     };
 
     const check = async () => {
+      // After Feedfence is updated or reloaded, this copy is cut off from the extension. Checking
+      // isValid notices that and stops it, instead of reading storage and throwing.
+      if (!ctx.isValid) return;
       const key = dayKey();
       const stored = await browser.storage.local.get([SETTINGS_KEY, key]);
       const settings = stored[SETTINGS_KEY] as Settings | undefined;
