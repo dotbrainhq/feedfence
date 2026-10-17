@@ -2,6 +2,12 @@
 
 Every change worth knowing about in Feedfence. Versions follow [semantic versioning](https://semver.org).
 
+## Unreleased
+
+### Added
+
+- Daily limit: a Custom choice, in the popup and on the welcome page, for any limit from 5 minutes to 12 hours. It follows the same rule as the other choices: lowering applies now, raising waits until tomorrow.
+
 ## 0.1.0 (October 17, 2026)
 
 First public release.

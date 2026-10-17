@@ -11,6 +11,21 @@ export interface LimitSettings {
 }
 
 export const LIMIT_OPTIONS = [30, 60, 90, 120, 180, 240] as const;
+/** The range a custom limit can take, in minutes: 5 minutes to 12 hours. */
+export const CUSTOM_MIN = 5;
+export const CUSTOM_MAX = 720;
+
+/** True for a limit that isn't one of the fixed choices. */
+export const isCustomLimit = (minutes: number | null) =>
+  minutes !== null && !(LIMIT_OPTIONS as readonly number[]).includes(minutes);
+
+/** Minutes typed into the custom field, or null unless it's a whole number in range. */
+export function parseCustomMinutes(input: string): number | null {
+  const text = input.trim();
+  if (!/^\d+$/.test(text)) return null;
+  const minutes = Number(text);
+  return minutes >= CUSTOM_MIN && minutes <= CUSTOM_MAX ? minutes : null;
+}
 export const SNOOZE_MS = 5 * 60 * 1000;
 
 const tomorrowKey = (now = new Date()) => {
