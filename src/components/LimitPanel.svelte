@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { LIMIT_OPTIONS, changeLimit, effectiveLimit, formatLimit } from '~/lib/limit';
+  import { LIMIT_OPTIONS, changeLimit, effectiveLimit, formatLimit, isCustomLimit } from '~/lib/limit';
+  import CustomLimit from './CustomLimit.svelte';
   import type { Settings } from '~/lib/settings';
   import { SITES } from '~/lib/sites';
   import { USAGE_PREFIX, dayKey, splitDuration, totalMs, type DayUsage } from '~/lib/usage';
@@ -14,6 +15,7 @@
   let shownMs = $state(0);
   let drawn = $state(0); // loop share actually drawn, 0..100
   let choosing = $state(false);
+  let customOpen = $state(false);
 
   const limit = $derived(effectiveLimit(settings.limit));
   const pending = $derived(settings.limit?.pending);
@@ -64,6 +66,7 @@
   const choose = (minutes: number | null) => {
     save((s) => (s.limit = { ...changeLimit(s.limit, minutes), snoozedUntil: s.limit?.snoozedUntil }));
     choosing = false;
+    customOpen = false;
   };
 
   const tomorrowNote = $derived(
@@ -115,8 +118,14 @@
     {#each LIMIT_OPTIONS as m (m)}
       <button aria-pressed={limit === m} onclick={() => choose(m)}>{formatLimit(m)}</button>
     {/each}
+    <button aria-pressed={isCustomLimit(limit)} aria-expanded={customOpen} onclick={() => (customOpen = !customOpen)}>
+      {isCustomLimit(limit) && limit !== null ? formatLimit(limit) : 'Custom'}
+    </button>
     {#if limit}<button aria-pressed={false} onclick={() => choose(null)}>Off</button>{/if}
   </div>
+  {#if customOpen}
+    <div class="custom-row"><CustomLimit current={limit} onset={choose} /></div>
+  {/if}
   {#if limit}<p class="rule">Lowering applies now. Raising or turning off applies tomorrow.</p>{/if}
 {/if}
 
@@ -271,6 +280,10 @@
   .link:focus-visible {
     outline: 2px solid var(--focus);
     outline-offset: 2px;
+  }
+
+  .custom-row {
+    padding: var(--space-sm) var(--space-lg) 0;
   }
 
   .rule {

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { LIMIT_OPTIONS, changeLimit, effectiveLimit, formatLimit } from '~/lib/limit';
+  import CustomLimit from '~/components/CustomLimit.svelte';
+  import { LIMIT_OPTIONS, changeLimit, effectiveLimit, formatLimit, isCustomLimit } from '~/lib/limit';
   import {
     DEFAULT_SETTINGS,
     HIDE_SITES,
@@ -71,7 +72,9 @@
   // The first choice here follows the usual rule (raising waits a day). After that,
   // changing your mind on this page applies at once: it's setup, not a way around a reminder.
   let limitSetHere = false;
+  let customOpen = $state(false);
   const chooseLimit = (minutes: number | null) => {
+    customOpen = false;
     save((draft) => {
       const next = limitSetHere ? { minutes } : changeLimit(draft.limit, minutes);
       draft.limit = { ...next, snoozedUntil: draft.limit?.snoozedUntil };
@@ -163,7 +166,13 @@
         {#each LIMIT_OPTIONS as m (m)}
           <button aria-pressed={limit === m} onclick={() => chooseLimit(m)}>{formatLimit(m)}</button>
         {/each}
+        <button aria-pressed={isCustomLimit(limit)} aria-expanded={customOpen} onclick={() => (customOpen = !customOpen)}>
+          {isCustomLimit(limit) && limit !== null ? formatLimit(limit) : 'Custom'}
+        </button>
       </div>
+      {#if customOpen}
+        <div class="custom-row"><CustomLimit current={limit} onset={chooseLimit} /></div>
+      {/if}
     </div>
   </section>
 
@@ -452,6 +461,10 @@
     border-color: var(--primary-bg);
     background: var(--primary-bg);
     color: var(--primary-fg);
+  }
+
+  .custom-row {
+    margin-top: var(--space-md);
   }
 
   .facts {
