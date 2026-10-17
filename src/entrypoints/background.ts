@@ -82,12 +82,14 @@ export default defineBackground(() => {
     const type = (msg as { type?: unknown })?.type;
     if (type === 'close-tab' && sender.tab?.id !== undefined) browser.tabs.remove(sender.tab.id).catch(() => {});
     else if (type === 'snooze') snooze().catch(() => {});
-    else if (isBatch(msg)) queue = queue.then(() => record(msg)).then(updateToolbarIcon).catch(() => {});
+    else if (isBatch(msg)) queue = queue.then(() => record(msg)).catch(() => {});
   });
 
-  // The icon follows the limit and today's time: on start, after each batch and when settings change.
+  // The icon follows the limit and today's time: on start, and whenever settings or usage records
+  // change, which covers new batches and a deleted history.
   updateToolbarIcon().catch(() => {});
   browser.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local' && SETTINGS_KEY in changes) updateToolbarIcon().catch(() => {});
+    if (area === 'local' && Object.keys(changes).some((k) => k === SETTINGS_KEY || k.startsWith(USAGE_PREFIX)))
+      updateToolbarIcon().catch(() => {});
   });
 });

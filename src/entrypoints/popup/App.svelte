@@ -57,6 +57,11 @@
     settingsItem.setValue(draft);
   }
 
+  function openData() {
+    browser.runtime.openOptionsPage();
+    window.close();
+  }
+
   function onTabKey(e: KeyboardEvent, i: number) {
     const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
     if (!step) return;
@@ -123,6 +128,7 @@
   {/if}
 
   <footer class="foot">
+    <button class="data" onclick={openData}>Your data</button>
     <ThemePicker value={theme} onchange={(t) => save((s) => (s.theme = t))} />
   </footer>
 </main>
@@ -211,8 +217,29 @@
 
   .foot {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
     padding: var(--space-sm) var(--space-lg);
     border-top: 1px solid var(--line);
+  }
+
+  .data {
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    color: var(--text-3);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .data:hover {
+    color: var(--text);
+  }
+
+  .data:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
   }
 </style>
