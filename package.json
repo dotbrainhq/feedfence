@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Hide the distracting parts of social sites and see your time and scrolling there.",
+  "license": "MIT",
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",

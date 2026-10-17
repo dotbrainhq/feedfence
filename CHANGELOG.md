@@ -2,7 +2,9 @@
 
 Every change worth knowing about in Feedfence. Versions follow [semantic versioning](https://semver.org).
 
-## Unreleased
+## 0.1.0 (October 17, 2026)
+
+First public release.
 
 ### Changed
 
