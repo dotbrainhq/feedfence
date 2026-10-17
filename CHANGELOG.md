@@ -18,6 +18,7 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ### Added
 
+- A welcome page opens once after install. It lets you pick Light, Focus or Strict for every site at once and an optional daily limit, says what Feedfence tracks and that it stays in the browser, and shows how to pin it.
 - Daily limit: one limit for all social sites together, off by default. The popup's Limit tab shows the day filling a loop, with time per site. Lowering the limit applies right away; raising it or turning it off applies the next day. At the limit, each social tab shows a reminder with Close this tab or 5 more minutes, and pauses video and audio. The toolbar icon fills as the day adds up.
 - Facebook: hide sponsored posts and ads, Reels, suggested posts from pages and groups you don't follow, Stories, Marketplace, Gaming and Watch in the top bar and menu, or the whole right column (the feed re-centers), with Light, Focus and Strict presets.
 - Reddit: hide ads, community suggestions in feeds, the Recent posts card, left menu extras (Popular, News, Explore, Games and Resources), or the whole right sidebar, with Light, Focus and Strict presets. The home feed centers once its sidebar is empty.
