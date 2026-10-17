@@ -24,7 +24,7 @@ Everything stays in your browser. Feedfence has no account, no analytics and mak
 
 ## Development
 
-You need Node 22 or later and npm. The project uses [WXT](https://wxt.dev), Svelte 5 and TypeScript.
+You need Node 24 (the version in `.nvmrc`) and npm. The project uses [WXT](https://wxt.dev), Svelte 5 and TypeScript.
 
 ```
 npm install
@@ -37,23 +37,41 @@ npm run dev
 |---|---|
 | `npm run build` | Builds Chrome and Firefox versions into `.output/`. |
 | `npm run check` | Type-checks the TypeScript and Svelte code. |
+| `npm test` | Runs the unit tests. |
 | `npm run lint:firefox` | Runs the Firefox add-on linter on the Firefox build. It downloads `web-ext` on first use. |
 | `npm run zip` | Packs both builds for store upload, plus the Firefox source ZIP. |
 
 To load a build by hand in Chrome, open `chrome://extensions`, turn on Developer mode, click "Load unpacked" and pick `.output/chrome-mv3`. In Firefox, open `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on" and pick `.output/firefox-mv3/manifest.json`.
 
+## Building from source
+
+These steps rebuild the exact files in the store packages. They're what Firefox Add-ons reviewers run.
+
+1. Use any OS with Node 24 and npm 11. The packages were built on macOS 27; Node 22 and Node 24 give identical output.
+2. Unpack the source and run `npm ci` in its folder. It installs the versions pinned in `package-lock.json`.
+3. Run `npm run zip`.
+
+The Firefox build lands in `.output/firefox-mv3/` and its package in `.output/feedfence-0.1.0-firefox.zip`. The Chrome build lands in `.output/chrome-mv3/`. Nothing is downloaded at build time beyond the npm packages, and the code isn't obfuscated.
+
 ## Project layout
 
 | Path | What's in it |
 |---|---|
-| `src/entrypoints/` | The popup, background script and, later, one content script per site. |
+| `src/entrypoints/` | The popup, the welcome and Your data pages, the background script, one content script per site, and the time meter and limit reminder that run on every supported site. |
+| `src/lib/` | Settings, usage, limit and export logic, with unit tests next to each file. |
+| `docs/` | The per-site re-test checklist. |
 | `src/assets/tokens.css` | Colors, type and spacing from the brand kit. |
 | `public/icon/` | Extension icons at 16, 32, 48 and 128 px. |
 
 ## Docs
 
 - [Contributing](CONTRIBUTING.md): how changes move from issue to merge.
+- [Site checks](docs/site-checks.md): how to re-test each site, and when each was last verified.
 - [Security policy](SECURITY.md): how to report a security issue.
+
+## License
+
+[MIT](LICENSE). The Feedfence name and logo aren't covered by the license; please don't use them for your own builds.
 
 ## Help
 
