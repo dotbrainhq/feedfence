@@ -1,5 +1,6 @@
 import { SNOOZE_MS } from '~/lib/limit';
-import { SETTINGS_KEY, type Settings } from '~/lib/settings';
+import { inFocus, nextFocusChange } from '~/lib/schedule';
+import { FOCUS_NOW_KEY, SETTINGS_KEY, type FocusNow, type Settings } from '~/lib/settings';
 import { SITE_IDS } from '~/lib/sites';
 import { updateToolbarIcon } from '~/lib/toolbar-icon';
 import { KEEP_DAYS, USAGE_PREFIX, dayKey, lastDayKeys, type DayUsage, type UsageBatch } from '~/lib/usage';
@@ -38,6 +39,21 @@ async function snooze() {
   if (!settings?.limit) return;
   settings.limit.snoozedUntil = Date.now() + SNOOZE_MS;
   await browser.storage.local.set({ [SETTINGS_KEY]: settings });
+}
+
+// Focus hours: keeps the stored preset for right now current, and sets one alarm for the next start
+// or end. Content scripts follow the stored value, so they don't each need the schedule logic.
+const FOCUS_ALARM = 'focus-hours';
+
+async function updateFocusNow() {
+  const stored = await browser.storage.local.get([SETTINGS_KEY, FOCUS_NOW_KEY]);
+  const focus = (stored[SETTINGS_KEY] as Settings | undefined)?.focus;
+  const now = new Date();
+  const value: FocusNow = inFocus(focus, now) ? focus!.preset : null;
+  if ((stored[FOCUS_NOW_KEY] ?? null) !== value) await browser.storage.local.set({ [FOCUS_NOW_KEY]: value });
+  await browser.alarms.clear(FOCUS_ALARM);
+  const next = nextFocusChange(focus, now);
+  if (next) browser.alarms.create(FOCUS_ALARM, { when: next.getTime() });
 }
 
 async function pruneOldDays() {
@@ -89,7 +105,13 @@ export default defineBackground(() => {
   // change, which covers new batches and a deleted history.
   updateToolbarIcon().catch(() => {});
   browser.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local' && Object.keys(changes).some((k) => k === SETTINGS_KEY || k.startsWith(USAGE_PREFIX)))
-      updateToolbarIcon().catch(() => {});
+    if (area !== 'local') return;
+    if (Object.keys(changes).some((k) => k === SETTINGS_KEY || k.startsWith(USAGE_PREFIX))) updateToolbarIcon().catch(() => {});
+    if (SETTINGS_KEY in changes) updateFocusNow().catch(() => {});
+  });
+
+  updateFocusNow().catch(() => {});
+  browser.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === FOCUS_ALARM) updateFocusNow().catch(() => {});
   });
 });

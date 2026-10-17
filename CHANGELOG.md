@@ -6,6 +6,7 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ### Added
 
+- Focus hours: pick days and a time range, and every site hides at least what Focus or Strict hides during them, then goes back to its own settings. Ranges can run past midnight, and the switch happens on its own on open tabs. Feedfence asks for the `alarms` permission to switch on time; it shows no prompt.
 - Daily limit: a Custom choice, in the popup and on the welcome page, for any limit from 5 minutes to 12 hours. It follows the same rule as the other choices: lowering applies now, raising waits until tomorrow.
 
 ## 0.1.0 (October 17, 2026)
