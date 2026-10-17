@@ -20,7 +20,7 @@ It covers YouTube, X, Reddit, LinkedIn, Instagram and Facebook. Feedfence isn't 
 
 ## Privacy
 
-Everything stays in your browser. Feedfence has no account, no analytics and makes no network requests. Your time and scroll data live in local extension storage, and you can export or delete them at any time.
+Everything stays in your browser. Feedfence has no account, no analytics and makes no network requests. Your time and scroll data live in local extension storage, and you can export them as CSV or delete them at any time from **Your data** in the popup.
 
 ## Development
 
