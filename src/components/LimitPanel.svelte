@@ -2,6 +2,10 @@
   import { onMount } from 'svelte';
   import { LIMIT_OPTIONS, changeLimit, effectiveLimit, formatLimit, isCustomLimit } from '~/lib/limit';
   import CustomLimit from './CustomLimit.svelte';
+  import Switch from './Switch.svelte';
+  import { DEFAULT_PAUSE } from '~/lib/pause';
+  import { HIDE_SITES } from '~/lib/settings';
+  import { siteName } from '~/lib/sites';
   import type { Settings } from '~/lib/settings';
   import { SITES } from '~/lib/sites';
   import { USAGE_PREFIX, dayKey, splitDuration, totalMs, type DayUsage } from '~/lib/usage';
@@ -69,6 +73,21 @@
     customOpen = false;
   };
 
+  const pause = $derived({ ...DEFAULT_PAUSE, ...settings.pause });
+  const pauseNote = $derived(
+    pause.on
+      ? pause.sites.length
+        ? `${pause.seconds} seconds before ${pause.sites.length === HIDE_SITES.length ? 'each site' : `${pause.sites.length} of ${HIDE_SITES.length} sites`}, once per tab`
+        : 'Pick at least one site'
+      : 'A few seconds to think before a feed opens',
+  );
+  const savePause = (change: (p: typeof DEFAULT_PAUSE) => void) =>
+    save((s) => {
+      const next = { ...DEFAULT_PAUSE, ...s.pause, sites: [...(s.pause?.sites ?? DEFAULT_PAUSE.sites)] };
+      change(next);
+      s.pause = next;
+    });
+
   const tomorrowNote = $derived(
     pending ? (pending.minutes === null ? 'No limit from tomorrow' : `${formatLimit(pending.minutes)} from tomorrow`) : '',
   );
@@ -77,7 +96,8 @@
 <div class="meter">
   <svg viewBox="10 30 108 68" role="img" aria-label={limit ? `${Math.round(usedMs / 60000)} of ${limit} minutes used today` : 'No daily limit set'}>
     <path class="track" d={LOOP} />
-    {#if limit}
+    <!-- Below about half a percent the round line ends would show as stray dots. -->
+    {#if limit && drawn >= 0.5}
       <path class="fill" d={LOOP} pathLength="100" stroke-dasharray="100 100" stroke-dashoffset={100 - drawn} />
     {/if}
     <circle class="ghost" cx="90" cy="84" r="7" />
@@ -134,6 +154,31 @@
   {#if limit && !choosing}<button class="link" onclick={() => (choosing = true)}>Change limit</button>{/if}
 </div>
 
+<!-- Steps aside while the limit is being changed, so the popup stays within its height. -->
+{#if !choosing}
+  <section class="pause" aria-labelledby="pause-title">
+    <div class="pause-head">
+      <span class="pause-text">
+        <span id="pause-title" class="pause-title">Pause before social sites</span>
+        <span class="pause-note">{pauseNote}</span>
+      </span>
+      <Switch checked={pause.on} label="Pause before social sites" disabled={!settings.enabled} onchange={(v) => savePause((p) => (p.on = v))} />
+    </div>
+    {#if pause.on}
+      <div class="pause-sites" role="group" aria-label="Pause on">
+        {#each HIDE_SITES as site (site)}
+          <button
+            aria-pressed={pause.sites.includes(site)}
+            onclick={() =>
+              savePause((p) => (p.sites = p.sites.includes(site) ? p.sites.filter((x) => x !== site) : [...p.sites, site]))}
+            >{siteName(site)}</button
+          >
+        {/each}
+      </div>
+    {/if}
+  </section>
+{/if}
+
 <style>
   .meter {
     padding: 0 var(--space-lg) var(--space-sm);
@@ -143,7 +188,7 @@
   svg {
     display: block;
     width: 100%;
-    max-width: 176px;
+    max-width: 156px;
     height: auto;
     margin: 0 auto;
     overflow: visible;
@@ -299,6 +344,65 @@
     justify-content: space-between;
     gap: var(--space-sm);
     padding: var(--space-md) var(--space-lg) var(--space-sm);
+  }
+
+  .pause {
+    margin: var(--space-sm) var(--space-lg) 0;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--line);
+  }
+
+  .pause-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .pause-text {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .pause-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .pause-note {
+    font-size: 0.75rem;
+    color: var(--text-3);
+  }
+
+  .pause-sites {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: var(--space-sm);
+  }
+
+  .pause-sites button {
+    padding: 4px 9px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-2);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+
+  .pause-sites button[aria-pressed='true'] {
+    border-color: var(--primary-bg);
+    background: var(--primary-bg);
+    color: var(--primary-fg);
+  }
+
+  .pause-sites button:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
   }
 
   .label {

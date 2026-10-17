@@ -1,4 +1,5 @@
 import type { LimitSettings } from './limit';
+import type { PauseSettings } from './pause';
 import type { FocusHours } from './schedule';
 
 /** Sites with hide rules, and the sections each one can hide. */
@@ -32,6 +33,7 @@ export interface Settings {
   /** Daily limit for all tracked sites together. Missing until someone sets one. */
   limit?: LimitSettings;
   focus?: FocusHours;
+  pause?: PauseSettings;
   youtube: SiteSettings;
   /** Missing in settings saved before support for the site. */
   linkedin?: SiteSettings;

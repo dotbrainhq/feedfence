@@ -1,6 +1,6 @@
 import { SNOOZE_MS } from '~/lib/limit';
 import { inFocus, nextFocusChange } from '~/lib/schedule';
-import { FOCUS_NOW_KEY, SETTINGS_KEY, type FocusNow, type Settings } from '~/lib/settings';
+import { FOCUS_NOW_KEY, HIDE_SITES, SETTINGS_KEY, type FocusNow, type HideSite, type Settings } from '~/lib/settings';
 import { SITE_IDS } from '~/lib/sites';
 import { updateToolbarIcon } from '~/lib/toolbar-icon';
 import { KEEP_DAYS, USAGE_PREFIX, dayKey, lastDayKeys, type DayUsage, type UsageBatch } from '~/lib/usage';
@@ -56,6 +56,15 @@ async function updateFocusNow() {
   if (next) browser.alarms.create(FOCUS_ALARM, { when: next.getTime() });
 }
 
+// "Don't pause on <site>" from the intention pause.
+async function stopPausing(site: HideSite) {
+  const stored = await browser.storage.local.get(SETTINGS_KEY);
+  const settings = stored[SETTINGS_KEY] as Settings | undefined;
+  if (!settings?.pause) return;
+  settings.pause.sites = settings.pause.sites.filter((s) => s !== site);
+  await browser.storage.local.set({ [SETTINGS_KEY]: settings });
+}
+
 async function pruneOldDays() {
   const keep = new Set(lastDayKeys(KEEP_DAYS));
   const all = await browser.storage.local.get(null);
@@ -98,6 +107,8 @@ export default defineBackground(() => {
     const type = (msg as { type?: unknown })?.type;
     if (type === 'close-tab' && sender.tab?.id !== undefined) browser.tabs.remove(sender.tab.id).catch(() => {});
     else if (type === 'snooze') snooze().catch(() => {});
+    else if (type === 'pause-off' && HIDE_SITES.includes((msg as { site: HideSite }).site))
+      stopPausing((msg as { site: HideSite }).site).catch(() => {});
     else if (isBatch(msg)) queue = queue.then(() => record(msg)).catch(() => {});
   });
 
