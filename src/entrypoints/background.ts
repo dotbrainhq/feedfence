@@ -70,11 +70,11 @@ async function injectIntoOpenTabs() {
 }
 
 export default defineBackground(() => {
-  if (!import.meta.env.FIREFOX) {
-    browser.runtime.onInstalled.addListener(({ reason }) => {
-      if (reason === 'install' || reason === 'update') injectIntoOpenTabs();
-    });
-  }
+  browser.runtime.onInstalled.addListener(({ reason }) => {
+    // The welcome page opens once, on a fresh install, never on updates.
+    if (reason === 'install') browser.tabs.create({ url: browser.runtime.getURL('/welcome.html') }).catch(() => {});
+    if (!import.meta.env.FIREFOX && (reason === 'install' || reason === 'update')) injectIntoOpenTabs();
+  });
 
   let queue = Promise.resolve();
   browser.runtime.onMessage.addListener((msg, sender) => {
