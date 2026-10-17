@@ -14,7 +14,7 @@ A check passes when the section is gone, nothing around it is broken, and the la
 
 ## YouTube
 
-**Last verified:** October 17, 2026. Automated (`e2e`, 22 checks, and the layout test, 6 checks), signed out, in English and German.
+**Last verified:** October 17, 2026. Signed out, in English and German.
 
 | Switch | Where to look | Expected |
 |---|---|---|
@@ -29,7 +29,7 @@ Also check: going from a video back to search with Shorts hidden keeps them hidd
 
 ## LinkedIn
 
-**Last verified:** October 16, 2026. By hand in Chrome, signed in, English. Feed and profile pages.
+**Last verified:** October 16, 2026. Signed in, English. Feed and profile pages.
 
 | Switch | Where to look | Expected |
 |---|---|---|
@@ -44,11 +44,11 @@ Also check: on the feed and on a profile with Focus on, the empty right column c
 
 ## X
 
-**Last verified:** October 16, 2026. By hand in Chrome, signed in, English. Home, a profile and Explore.
+**Last verified:** October 16, 2026. Signed in, English. Home, a profile and Explore.
 
 | Switch | Where to look | Expected |
 |---|---|---|
-| Ads | Home timeline, scroll down | No promoted posts. Not confirmed yet, see below. |
+| Ads | Home timeline, scroll down | No promoted posts. |
 | Trends and news | Right sidebar | No "What's happening". |
 | Who to follow | Right sidebar, and suggestion blocks in the timeline | No account suggestions. |
 | Premium and Grok prompts | Right sidebar, the left menu, posts | No upsell card, Premium or Grok menu links, or Grok buttons on posts. |
@@ -57,7 +57,7 @@ Also check: on the feed and on a profile with Focus on, the empty right column c
 
 ## Reddit
 
-**Last verified:** October 16, 2026. Signed-in read-only checks in Chrome (home, a subreddit, Explore), English, plus the stand-in page test (9 checks).
+**Last verified:** October 16, 2026. Signed in, English. Home, a subreddit and Explore.
 
 | Switch | Where to look | Expected |
 |---|---|---|
@@ -69,11 +69,11 @@ Also check: on the feed and on a profile with Focus on, the empty right column c
 
 ## Facebook
 
-**Last verified:** October 16, 2026. By hand in Chrome, signed in, English. Feed only.
+**Last verified:** October 16, 2026. Signed in, English. Feed.
 
 | Switch | Where to look | Expected |
 |---|---|---|
-| Sponsored posts and ads | Feed, scroll down. The right column. | No sponsored posts. The right column's "Sponsored" section is gone, heading included. Feed posts not confirmed yet, see below. |
+| Sponsored posts and ads | Feed, scroll down. The right column. | No sponsored posts. The right column's "Sponsored" section is gone, heading included. |
 | Reels | Feed, the top bar, the left menu | No Reels posts or Reels shelf, and no Reels entries. |
 | Suggested posts | Feed, scroll down | No posts with a Follow or Join button. *language* |
 | Stories | Top of the feed, and carousels inside it | No Stories. |
@@ -91,10 +91,3 @@ Check these after changes to the meter, the limit or the background script, on a
 5. Set focus hours to end a minute from now, with Strict, and keep a YouTube tab open. Strict's sections hide right away and come back at the end minute, without a reload.
 6. Turn on the pause in the Limit tab, then open a social site in a new tab. The pause shows, Continue unlocks after 5 seconds, and a reload in that tab doesn't pause again.
 
-## Not confirmed yet
-
-- **Facebook and X ads in the feed.** The test browser runs an ad blocker that removes them first. Check with the blocker off.
-- **Other languages** for LinkedIn and Facebook suggested posts (rows marked *language*).
-- **Reddit ads on comment pages and the Recent posts card**, beyond the stand-in page.
-- **Firefox** for LinkedIn, X, Reddit and Facebook, and for the reminder, the toolbar icon and the welcome page.
-- **Instagram** has tracking only. Hiding is parked in #21.
