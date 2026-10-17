@@ -10,6 +10,7 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ### Fixed
 
+- Popup: screen readers now hear each site's minutes for the six days before today, which the 7-day bars only showed visually.
 - LinkedIn: a sidebar card that holds an ad next to other content now hides only the ad.
 - LinkedIn profile pages: suggestion cards in the sidebar ("People also viewed", "People you may know", viewer teasers) are hidden with Recommendations, and with Recommendations and ads hidden the sidebar collapses and the profile centers.
 - Chrome: tabs already open when Feedfence is installed or updated now get hiding and tracking without a refresh.

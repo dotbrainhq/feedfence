@@ -17,6 +17,10 @@
 
   const DAYS = 7;
   const keys = lastDayKeys(DAYS);
+  // Day names for the text version of the bars. The UI is English, so the names are too.
+  const dayNames = keys.map((k) =>
+    new Date(`${k.slice(USAGE_PREFIX.length)}T00:00`).toLocaleDateString('en', { weekday: 'long' }),
+  );
   let days = $state<(DayUsage | undefined)[]>([]);
 
   const load = async () => {
@@ -51,7 +55,12 @@
     SITES.map((site) => {
       const week = days.map((d) => d?.[site.id]?.ms ?? 0);
       const max = Math.max(...week, 1);
-      return { ...site, ms: week[DAYS - 1] ?? 0, bars: week.map((ms) => ms / max), used: week.some((ms) => ms > 0) };
+      // Today's time is read from the row itself, so the text covers the six days before it.
+      const text = `Previous 6 days: ${week
+        .slice(0, -1)
+        .map((ms, i) => `${dayNames[i]} ${formatMinutes(ms)}`)
+        .join(', ')}`;
+      return { ...site, ms: week[DAYS - 1] ?? 0, bars: week.map((ms) => ms / max), text, used: week.some((ms) => ms > 0) };
     }).sort((a, b) => b.ms - a.ms || Number(b.used) - Number(a.used)),
   );
 </script>
@@ -91,6 +100,7 @@
         {#each row.bars as bar, i (i)}<i style:height={`${Math.max(8, bar * 100)}%`}></i>{/each}
       </span>
       <span class="time">{formatMinutes(row.ms)}</span>
+      <span class="sr">{row.text}</span>
     </li>
   {/each}
 </ul>
@@ -98,6 +108,16 @@
 <p class="note">Counts time while a site's tab is open, in front, and in use. Distances are approximate.</p>
 
 <style>
+  /* Read by screen readers, not shown. */
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   .today {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
