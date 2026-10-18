@@ -75,8 +75,9 @@ Also check: on the feed and on a profile with Focus on, the empty right column c
 |---|---|---|
 | Sponsored posts and ads | Feed, scroll down. The right column. | No sponsored posts. The right column's "Sponsored" section is gone, heading included. |
 | Reels | Feed, the top bar, the left menu | No Reels posts or Reels shelf, and no Reels entries. |
-| Suggested posts | Feed, scroll down | No posts with a Follow or Join button. *language* |
+| Suggested posts | Feed, scroll down | No posts with a Follow or Join button, and no "Your group suggestions" carousel. Posts from your own groups stay. *language* |
 | Stories | Top of the feed, and carousels inside it | No Stories. |
+| Friend requests | Right column | No Friend requests block. Birthdays and contacts stay. |
 | Marketplace, Gaming and Watch | Top bar and left menu | Those entries are gone. Groups stays. |
 | The whole right column | Feed | No right column, and the feed centers. |
 

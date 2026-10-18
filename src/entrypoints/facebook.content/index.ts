@@ -39,12 +39,27 @@ function markRightRail() {
   if (!block.hasAttribute('data-ff-fb')) block.setAttribute('data-ff-fb', 'promoted');
 }
 
+/**
+ * The friend requests block in the right column: climb from a request link
+ * while the block holds a single heading, so its "Friend requests" heading is
+ * included and birthdays, ads or contacts under their own headings are not.
+ */
+function markRequests() {
+  const rail = document.querySelector('[data-pagelet="RightRail"]');
+  let block = rail?.querySelector('a[href*="/friends/requests"]');
+  if (!rail || !block || block.closest('[data-ff-fb]')) return;
+  const headings = (el: Element) => el.querySelectorAll('h2, h3, [role="heading"]').length;
+  while (block.parentElement && block.parentElement !== rail && headings(block.parentElement) <= 1) block = block.parentElement;
+  block.setAttribute('data-ff-fb', 'requests');
+}
+
 function scan() {
   for (const item of document.querySelectorAll('[data-pagelet^="FeedUnit"]:not([data-ff-fb])')) {
     const kind = feedItemKind(item);
     if (kind) item.setAttribute('data-ff-fb', kind);
   }
   markRightRail();
+  markRequests();
 }
 
 export default defineContentScript({

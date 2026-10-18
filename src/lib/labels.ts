@@ -36,9 +36,10 @@ export const SECTION_LABELS: Record<HideSite, Record<string, { label: string; no
   facebook: {
     promoted: { label: 'Sponsored posts and ads', note: 'In the feed and the right column' },
     reels: { label: 'Reels', note: 'In the feed, top bar and left menu' },
-    suggested: { label: 'Suggested posts', note: "From pages and groups you don't follow" },
+    suggested: { label: 'Suggested posts', note: 'From pages and groups, and group suggestions' },
     stories: { label: 'Stories', note: 'At the top of and inside the feed' },
+    requests: { label: 'Friend requests', note: 'In the right column' },
     menu: { label: 'Marketplace, Gaming and Watch', note: 'In the top bar and the left menu' },
-    rightcol: { label: 'The whole right column', note: 'Friend requests, birthdays, contacts' },
+    rightcol: { label: 'The whole right column', note: 'Friend requests, birthdays and contacts' },
   },
 };

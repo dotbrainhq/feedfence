@@ -21,8 +21,19 @@ html[data-ff-reels] [data-pagelet='LeftRail'] li:has(a[href*='/reel']) {
   display: none !important;
 }
 
-/* Posts from pages and groups you don't follow (marked by the content script). */
-html[data-ff-suggested] [data-ff-fb='suggested'] {
+/*
+ * Posts from pages and groups you don't follow (marked by the content script),
+ * the "Your group suggestions" carousel (the only feed item with a "See more
+ * groups" link) and the People you may know carousel.
+ */
+html[data-ff-suggested] [data-ff-fb='suggested'],
+html[data-ff-suggested] [data-pagelet^='FeedUnit']:has(a[href*='/groups/discover']),
+html[data-ff-suggested] [data-pagelet^='FeedUnit']:has(a[href*='/friends/suggestions']) {
+  display: none !important;
+}
+
+/* The friend requests block in the right column (marked by the content script). */
+html[data-ff-requests] [data-ff-fb='requests'] {
   display: none !important;
 }
 

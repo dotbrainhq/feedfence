@@ -6,6 +6,7 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ### Added
 
+- Facebook: the "Your group suggestions" carousel hides with Suggested posts, and a new Friend requests switch hides that block in the right column while birthdays and contacts stay. Friend requests are hidden in Focus and Strict.
 - This week: a view in the popup's Time tab with your time so far this week against the same days last week, daily bars with last week behind them, and each site's week. A first week shows no comparison until there's a week to compare with.
 - Intention pause: an optional few seconds before a social site opens, once per tab, asking what you're there for. Continue unlocks after 5 seconds; closing the tab or turning the pause off for that site works right away. Off by default, set in the Limit tab.
 - Focus hours: pick days and a time range, and every site hides at least what Focus or Strict hides during them, then goes back to its own settings. Ranges can run past midnight, and the switch happens on its own on open tabs. Feedfence asks for the `alarms` permission to switch on time; it shows no prompt.
@@ -13,6 +14,7 @@ Every change worth knowing about in Feedfence. Versions follow [semantic version
 
 ### Changed
 
+- Site panels sit a little tighter, so Facebook's seven switches fit the popup.
 - The popup's Today tab is now Time, with Today and This week inside it.
 - Whole hours read "2 h" instead of "2 h 0 min".
 
