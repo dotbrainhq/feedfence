@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import WeekView from './WeekView.svelte';
   import { SITES } from '~/lib/sites';
   import {
     EIFFEL_TOWER_M,
@@ -22,6 +23,7 @@
     new Date(`${k.slice(USAGE_PREFIX.length)}T00:00`).toLocaleDateString('en', { weekday: 'long' }),
   );
   let days = $state<(DayUsage | undefined)[]>([]);
+  let view = $state<'today' | 'week'>('today');
 
   const load = async () => {
     const stored = await browser.storage.local.get(keys);
@@ -65,11 +67,18 @@
   );
 </script>
 
+<div class="views" role="group" aria-label="Period">
+  <button aria-pressed={view === 'today'} onclick={() => (view = 'today')}>Today</button>
+  <button aria-pressed={view === 'week'} onclick={() => (view = 'week')}>This week</button>
+</div>
+
+{#if view === 'week'}
+  <WeekView />
+{:else}
 <div class="today">
   <div>
-    <span class="label">On social sites today</span>
     <div class="big">
-      {#if time.h}{time.h}<small>h</small>{/if}{time.m}<small>min</small>
+      {#if time.h}{time.h}<small>h</small>{/if}{#if time.m || !time.h}{time.m}<small>min</small>{/if}
     </div>
     <p class="delta">
       {#if usualMs === null}
@@ -106,8 +115,45 @@
 </ul>
 
 <p class="note">Counts time while a site's tab is open, in front, and in use. Distances are approximate.</p>
+{/if}
 
 <style>
+  .views {
+    display: flex;
+    gap: 2px;
+    padding: 0 var(--space-lg) var(--space-xs);
+  }
+
+  .views button {
+    padding: 2px 8px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-3);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+
+  .views button:first-child {
+    margin-left: -8px;
+  }
+
+  .views button[aria-pressed='true'] {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  .views button:hover {
+    color: var(--text);
+  }
+
+  .views button:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+
   /* Read by screen readers, not shown. */
   .sr {
     position: absolute;
@@ -126,10 +172,6 @@
     padding: 0 var(--space-lg) var(--space-lg);
   }
 
-  .label {
-    font-size: 0.75rem;
-    color: var(--text-3);
-  }
 
   .big {
     margin: var(--space-xs) 0 var(--space-sm);

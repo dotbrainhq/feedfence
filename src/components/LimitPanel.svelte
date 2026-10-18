@@ -106,7 +106,7 @@
 
   {#if limit}
     <div class="big">
-      {#if time.h}{time.h}<small>h</small>{/if}{time.m}<small>min</small>
+      {#if time.h}{time.h}<small>h</small>{/if}{#if time.m || !time.h}{time.m}<small>min</small>{/if}
     </div>
     <p class="status">
       {#if leftMin > 0}
