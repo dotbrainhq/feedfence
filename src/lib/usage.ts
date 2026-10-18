@@ -44,7 +44,8 @@ export function splitDuration(ms: number): { h: number; m: number } {
 export function formatMinutes(ms: number): string {
   if (ms > 0 && ms < 30_000) return '<1 min';
   const { h, m } = splitDuration(ms);
-  return h ? `${h} h ${m} min` : `${m} min`;
+  if (!h) return `${m} min`;
+  return m ? `${h} h ${m} min` : `${h} h`;
 }
 
 // CSS defines 96 px per inch. Real screens differ, so distances are labeled approximate.

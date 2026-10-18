@@ -43,6 +43,7 @@ describe('formatting time', () => {
     expect(formatMinutes(10_000)).toBe('<1 min');
     expect(formatMinutes(0)).toBe('0 min');
     expect(formatMinutes(90 * 60000)).toBe('1 h 30 min');
+    expect(formatMinutes(120 * 60000)).toBe('2 h');
   });
 });
 

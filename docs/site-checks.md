@@ -84,7 +84,7 @@ Also check: on the feed and on a profile with Focus on, the empty right column c
 
 Check these after changes to the meter, the limit or the background script, on any site.
 
-1. Use a site for 10 minutes. The popup's Today shows 10 min, within a few seconds.
+1. Use a site for 10 minutes. The popup's Time tab shows 10 min for today, within a few seconds, and This week adds them in.
 2. Leave the tab in the background for 5 minutes. Today doesn't grow.
 3. Set a 30 min limit with more time than that used today, then open a social tab. The reminder shows and video pauses. "5 more minutes" clears it in every tab.
 4. Reload Feedfence with a social tab open, then return to the tab. No errors in its console.

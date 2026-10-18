@@ -21,7 +21,7 @@
   let focusOpen = $state(false);
   let here = $state<HideSite | null>(null);
   const TABS: { id: Tab; label: string }[] = [
-    { id: 'today', label: 'Today' },
+    { id: 'today', label: 'Time' },
     { id: 'site', label: 'Sites' },
     { id: 'limit', label: 'Limit' },
   ];
