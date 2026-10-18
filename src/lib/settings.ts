@@ -8,7 +8,7 @@ export const SECTIONS = {
   linkedin: ['promoted', 'suggested', 'recommendations', 'games', 'stats', 'feed'],
   x: ['promoted', 'trends', 'follow', 'premium', 'sidebar', 'foryou'],
   reddit: ['promoted', 'suggested', 'recent', 'popular', 'sidebar'],
-  facebook: ['promoted', 'reels', 'suggested', 'stories', 'menu', 'rightcol'],
+  facebook: ['promoted', 'reels', 'suggested', 'stories', 'requests', 'menu', 'rightcol'],
 } as const;
 
 export type HideSite = keyof typeof SECTIONS;
@@ -67,8 +67,8 @@ const PRESET_SECTIONS: Record<HideSite, Record<Preset, string[]>> = {
   },
   facebook: {
     light: ['promoted'],
-    focus: ['promoted', 'reels', 'suggested', 'stories'],
-    strict: ['promoted', 'reels', 'suggested', 'stories', 'menu', 'rightcol'],
+    focus: ['promoted', 'reels', 'suggested', 'stories', 'requests'],
+    strict: ['promoted', 'reels', 'suggested', 'stories', 'requests', 'menu', 'rightcol'],
   },
 };
 

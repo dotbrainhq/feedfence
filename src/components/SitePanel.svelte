@@ -275,8 +275,10 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-md);
-    padding: 4px 0;
+    padding: 3px 0;
     border-top: 1px solid var(--line);
+    /* Tighter than body text, so seven switches fit the popup. */
+    line-height: 1.3;
   }
 
   .hides small {
