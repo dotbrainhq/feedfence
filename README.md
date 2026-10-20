@@ -51,7 +51,7 @@ These steps rebuild the exact files in the store packages. They're what Firefox 
 2. Unpack the source and run `npm ci` in its folder. It installs the versions pinned in `package-lock.json`.
 3. Run `npm run zip`.
 
-The Firefox build lands in `.output/firefox-mv3/` and its package in `.output/feedfence-0.1.0-firefox.zip`. The Chrome build lands in `.output/chrome-mv3/`. Nothing is downloaded at build time beyond the npm packages, and the code isn't obfuscated.
+The Firefox build lands in `.output/firefox-mv3/` and its package in `.output/feedfence-<version>-firefox.zip`. The Chrome build lands in `.output/chrome-mv3/`. Nothing is downloaded at build time beyond the npm packages, and the code isn't obfuscated.
 
 ## Project layout
 
