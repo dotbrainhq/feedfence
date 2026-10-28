@@ -1,22 +1,45 @@
-export const SITES = [
-  { id: 'youtube', name: 'YouTube', host: 'www.youtube.com' },
-  { id: 'x', name: 'X', host: 'x.com' },
-  { id: 'reddit', name: 'Reddit', host: 'www.reddit.com' },
-  { id: 'linkedin', name: 'LinkedIn', host: 'www.linkedin.com' },
-  { id: 'instagram', name: 'Instagram', host: 'www.instagram.com' },
-  { id: 'facebook', name: 'Facebook', host: 'www.facebook.com' },
-] as const;
+/**
+ * Every address a site is served from. `hosts` share the desktop page that the hide rules are written
+ * for; `trackOnly` serve a different page (mobile, or Reddit's old design), where Feedfence counts time
+ * but can't hide anything. Bare and mobile addresses that redirect a desktop browser to one of these
+ * (facebook.com, m.youtube.com and so on) don't need listing.
+ *
+ * Addresses and names are kept apart so scripts that only need the addresses don't ship the names.
+ */
+const SITE_HOSTS = {
+  youtube: { hosts: ['www.youtube.com'], trackOnly: ['m.youtube.com'] },
+  x: { hosts: ['x.com'], trackOnly: [] },
+  reddit: { hosts: ['www.reddit.com'], trackOnly: ['old.reddit.com'] },
+  linkedin: { hosts: ['www.linkedin.com'], trackOnly: [] },
+  instagram: { hosts: ['www.instagram.com'], trackOnly: [] },
+  facebook: { hosts: ['www.facebook.com', 'web.facebook.com'], trackOnly: ['m.facebook.com'] },
+} as const satisfies Record<string, { hosts: readonly string[]; trackOnly: readonly string[] }>;
 
-export type SiteId = (typeof SITES)[number]['id'];
+export type SiteId = keyof typeof SITE_HOSTS;
 
-export const SITE_IDS: readonly SiteId[] = SITES.map((s) => s.id);
+const NAMES: Record<SiteId, string> = {
+  youtube: 'YouTube',
+  x: 'X',
+  reddit: 'Reddit',
+  linkedin: 'LinkedIn',
+  instagram: 'Instagram',
+  facebook: 'Facebook',
+};
 
-export const SITE_MATCHES = SITES.map((s) => `*://${s.host}/*`);
+const allHosts = (id: SiteId): readonly string[] => [...SITE_HOSTS[id].hosts, ...SITE_HOSTS[id].trackOnly];
+
+export const SITE_IDS = Object.keys(SITE_HOSTS) as SiteId[];
+
+/** Each site with its name and addresses, in popup order. */
+export const SITES = /* @__PURE__ */ SITE_IDS.map((id) => ({ id, name: NAMES[id], ...SITE_HOSTS[id] }));
+
+/** Every address of every site, for the scripts that count time, show the limit and pause. */
+export const SITE_MATCHES = SITE_IDS.flatMap((id) => allHosts(id).map((h) => `*://${h}/*`));
 
 export function siteForHost(host: string): SiteId | undefined {
-  return SITES.find((s) => s.host === host)?.id;
+  return SITE_IDS.find((id) => allHosts(id).includes(host));
 }
 
 export function siteName(id: SiteId): string {
-  return SITES.find((s) => s.id === id)?.name ?? id;
+  return NAMES[id] ?? id;
 }

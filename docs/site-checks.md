@@ -12,6 +12,10 @@ Sites change their markup without notice, and a hide rule that worked last week 
 
 A check passes when the section is gone, nothing around it is broken, and the layout closes up without an empty gap.
 
+## Addresses
+
+Each site's addresses are listed in `src/lib/sites.ts`. Hide rules run on the desktop addresses (`hosts`); time is also counted on the mobile and old-design addresses (`trackOnly`). If a site starts serving its desktop page from a new address, add it to `hosts` and to that site's content script `matches`.
+
 ## YouTube
 
 **Last verified:** October 17, 2026. Signed out, in English and German.

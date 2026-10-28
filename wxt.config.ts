@@ -21,7 +21,9 @@ export default defineConfig({
     ],
   },
   manifest: ({ browser }) => ({
-    name: 'Feedfence',
+    // Chrome and Edge show the extension's own name as the store title, so their build carries the
+    // words people search for. Firefox sets its listing name separately and keeps the short one.
+    name: browser === 'firefox' ? 'Feedfence' : 'Feedfence: Hide Shorts & Reels, Track Screen Time',
     description:
       'Hide feeds, Shorts, Reels and sponsored posts on social sites, and see your time and scrolling there.',
     // scripting: Chrome only, to add content scripts to tabs open at install or update.
