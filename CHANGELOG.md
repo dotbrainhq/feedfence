@@ -2,6 +2,17 @@
 
 Every change worth knowing about in Feedfence. Versions follow [semantic versioning](https://semver.org).
 
+## 0.2.1 (October 28, 2026)
+
+### Changed
+
+- Chrome and Edge: the extension's name is now "Feedfence: Hide Shorts & Reels, Track Screen Time", which is also the store title. Firefox keeps "Feedfence".
+
+### Fixed
+
+- Facebook hiding and time tracking now work on web.facebook.com, the address Facebook serves in some regions, not only www.facebook.com.
+- Time is also counted on m.facebook.com, m.youtube.com and old.reddit.com. Those pages are laid out differently, so nothing is hidden there yet.
+
 ## 0.2.0 (October 20, 2026)
 
 ### Added

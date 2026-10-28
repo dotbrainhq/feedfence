@@ -63,7 +63,8 @@ function scan() {
 }
 
 export default defineContentScript({
-  matches: ['*://www.facebook.com/*'],
+  // Keep in step with the desktop hosts in src/lib/sites.ts. Some regions get web.facebook.com.
+  matches: ['*://www.facebook.com/*', '*://web.facebook.com/*'],
   runAt: 'document_start',
   main(ctx) {
     runHiding(ctx, 'facebook');
